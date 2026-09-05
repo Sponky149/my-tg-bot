@@ -128,6 +128,27 @@ def list_cases(db: Session = Depends(get_db)):
     ]}
  
  
+@app.get("/api/cases/{case_id}/items")
+def case_items_endpoint(case_id: int, db: Session = Depends(get_db)):
+    """Возвращает список всех предметов внутри кейса с их шансом выпадения (%)."""
+    from database import CaseItem, Item
+    case_items = db.query(CaseItem).filter(CaseItem.case_id == case_id).all()
+    total_weight = sum(ci.weight for ci in case_items) or 1
+ 
+    result = []
+    for ci in case_items:
+        item = db.query(Item).get(ci.item_id)
+        result.append({
+            "name": item.name,
+            "rarity": item.rarity,
+            "value": item.value,
+            "chance": round(ci.weight / total_weight * 100, 2),
+        })
+    # сортируем от самого частого к самому редкому - удобнее смотреть
+    result.sort(key=lambda x: -x["chance"])
+    return {"items": result}
+ 
+ 
 @app.post("/api/cases/{case_id}/open")
 def open_case_endpoint(
     case_id: int,
