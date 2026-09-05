@@ -12,18 +12,18 @@
      ПАЛИТРА — тёмный изумрудно-кислотный неон
      ============================================================ */
   :root {
-    --bg:        #06100d;
-    --bg-2:      #0a1a15;
-    --card:      #0e2019;
-    --card-2:    #123027;
-    --field:     #081512;
-    --stroke:    #1c3d31;
-    --text:      #eafff5;
-    --muted:     #6f9585;
+    --bg:        #0a0614;
+    --bg-2:      #120a1f;
+    --card:      #1a1025;
+    --card-2:    #221333;
+    --field:     #0d0817;
+    --stroke:    #33224a;
+    --text:      #f3ecff;
+    --muted:     #9784b3;
 
-    --lime:      #b6ff3d;
-    --emerald:   #22e39a;
-    --cyan:      #23d5e0;
+    --lime:      #b95bff;
+    --emerald:   #7c3aed;
+    --cyan:      #e045c9;
     --danger:    #ff4d6d;
 
     --radius:    18px;
@@ -46,7 +46,7 @@
     min-height: 100vh;
     padding: 0 16px 110px;
     background:
-      radial-gradient(90% 40% at 50% -5%, rgba(182,255,61,0.12), transparent 60%),
+      radial-gradient(90% 40% at 50% -5%, rgba(185,91,255,0.14), transparent 60%),
       radial-gradient(70% 50% at 100% 20%, rgba(35,213,224,0.08), transparent 60%),
       var(--bg);
   }
@@ -61,7 +61,7 @@
     background: linear-gradient(145deg, var(--lime), var(--emerald));
     display: flex; align-items: center; justify-content: center;
     font-weight: 900; font-size: 22px; color: #04160e;
-    box-shadow: 0 6px 20px rgba(182,255,61,0.35);
+    box-shadow: 0 6px 20px rgba(185,91,255,0.35);
   }
   .brand-name { font-size: 21px; font-weight: 900; letter-spacing: 0.3px; }
   .brand-name .u { color: var(--lime); }
@@ -99,9 +99,9 @@
 
   .wheel {
     width: 260px; height: 260px; border-radius: 50%;
-    background: conic-gradient(var(--emerald) 0deg 180deg, #10241d 180deg 360deg);
+    background: conic-gradient(var(--emerald) 0deg 180deg, #170b28 180deg 360deg);
     border: 3px solid var(--stroke);
-    box-shadow: inset 0 0 0 2px rgba(0,0,0,0.4), 0 0 50px rgba(34,227,154,0.15);
+    box-shadow: inset 0 0 0 2px rgba(0,0,0,0.4), 0 0 50px rgba(124,58,237,0.18);
   }
 
   .needle-rotor {
@@ -116,12 +116,12 @@
     border-left: 14px solid transparent;
     border-right: 14px solid transparent;
     border-top: 40px solid var(--lime);
-    filter: drop-shadow(0 0 10px rgba(182,255,61,0.9));
+    filter: drop-shadow(0 0 10px rgba(185,91,255,0.9));
   }
   .needle-dot {
     position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
     width: 22px; height: 22px; border-radius: 50%;
-    background: var(--lime); box-shadow: 0 0 14px rgba(182,255,61,0.8);
+    background: var(--lime); box-shadow: 0 0 14px rgba(185,91,255,0.8);
   }
 
   .wheel-hub {
@@ -144,7 +144,7 @@
     display: flex; flex-direction: column; align-items: center; gap: 6px;
     min-height: 118px; justify-content: center;
   }
-  .slot.want { border-color: rgba(34,227,154,0.4); }
+  .slot.want { border-color: rgba(124,58,237,0.4); }
   .slot .slot-cap { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
   .slot .slot-emoji { font-size: 40px; line-height: 1; }
   .slot .slot-name { font-size: 13.5px; font-weight: 800; }
@@ -160,7 +160,7 @@
     background: linear-gradient(145deg, var(--lime), var(--emerald));
     color: #04160e; font-weight: 900; font-size: 18px; letter-spacing: 0.5px;
     padding: 17px; border-radius: var(--radius);
-    box-shadow: 0 8px 24px rgba(34,227,154,0.4);
+    box-shadow: 0 8px 24px rgba(124,58,237,0.4);
     display: flex; align-items: center; justify-content: center; gap: 8px;
   }
   .upgrade-btn:disabled { opacity: 0.45; filter: grayscale(0.4); box-shadow: none; cursor: default; }
@@ -173,7 +173,7 @@
   }
   .case-emoji {
     font-size: 46px; line-height: 1;
-    filter: drop-shadow(0 6px 14px rgba(34,227,154,0.25));
+    filter: drop-shadow(0 6px 14px rgba(124,58,237,0.25));
   }
   .case-name { font-size: 15px; font-weight: 800; }
   .case-open {
@@ -189,7 +189,7 @@
     background: linear-gradient(145deg, var(--cyan), var(--emerald));
     display: flex; align-items: center; justify-content: center;
     font-size: 26px; font-weight: 900; color: #04160e;
-    box-shadow: 0 6px 20px rgba(34,213,224,0.3);
+    box-shadow: 0 6px 20px rgba(224,69,201,0.3);
   }
   .id-info { min-width: 0; }
   .id-value { font-size: 22px; font-weight: 900; margin-top: 3px; font-variant-numeric: tabular-nums; }
@@ -238,7 +238,7 @@
   .nav-btn .nav-ic { font-size: 22px; line-height: 1; }
   .nav-btn.active {
     color: var(--lime);
-    background: rgba(182,255,61,0.08);
+    background: rgba(185,91,255,0.1);
   }
   .nav-btn:active { transform: scale(0.94); }
 
@@ -314,7 +314,7 @@
   .reel-marker {
     position: absolute; top: 0; bottom: 0; left: 50%; transform: translateX(-50%);
     width: 3px; background: var(--lime); z-index: 5;
-    box-shadow: 0 0 12px rgba(182,255,61,0.8);
+    box-shadow: 0 0 12px rgba(185,91,255,0.8);
   }
   .reel-track {
     position: absolute; top: 0; left: 0; height: 100%;
@@ -330,7 +330,7 @@
   .reel-item .re-value { font-size: 11px; color: var(--lime); font-weight: 800; }
   .reel-item.re-common { border-color: var(--stroke); }
   .reel-item.re-rare { border-color: rgba(35,213,224,0.5); }
-  .reel-item.re-epic { border-color: rgba(182,255,61,0.5); }
+  .reel-item.re-epic { border-color: rgba(185,91,255,0.5); }
   .reel-item.re-legendary { border-color: rgba(255,77,109,0.6); box-shadow: 0 0 16px rgba(255,77,109,0.25); }
 
   .reel-result {
@@ -732,7 +732,7 @@
   function renderWheel() {
     const deg = state.chance / 100 * 360;
     wheelEl.style.background =
-      `conic-gradient(var(--emerald) 0deg ${deg}deg, #10241d ${deg}deg 360deg)`;
+      `conic-gradient(var(--emerald) 0deg ${deg}deg, #170b28 ${deg}deg 360deg)`;
     $('wheelPct').textContent = state.chance ? state.chance + '%' : '—';
   }
 
