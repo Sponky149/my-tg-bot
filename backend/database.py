@@ -16,7 +16,7 @@ class User(Base):
     level = Column(Integer, default=1)
     exp = Column(Integer, default=0)
     created_at = Column(DateTime, default=datetime.utcnow)
-    last_daily_claim = Column(DateTime, nullable=True)  # НОВОЕ: когда последний раз брал бесплатный кейс
+    last_daily_claim = Column(DateTime, nullable=True) 
  
     inventory = relationship("InventoryItem", back_populates="owner")
  
@@ -25,7 +25,7 @@ class Item(Base):
     __tablename__ = "items"
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    rarity = Column(String)  # common / rare / epic / legendary
+    rarity = Column(String)  
     value = Column(Float)
     image_url = Column(String, nullable=True)
  
