@@ -15,8 +15,8 @@ from upgrade import perform_upgrade
 from sell import sell_item
 from cases import open_case
  
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-WEBAPP_URL = os.getenv("WEBAPP_URL")
+BOT_TOKEN = os.getenv("8855316623:AAHkT94L1SRyCdSC4PNXT4uB4y_HE_K79pA")
+WEBAPP_URL = os.getenv("https://t.me/BrainrotUpper_bot/upgrade")
  
 app = FastAPI()
  
@@ -27,11 +27,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
  
-# ============================================================
-# ТЕЛЕГРАМ-БОТ - работает ВНУТРИ этого же веб-сервера,
-# чтобы уместиться в один бесплатный Web Service на Render
-# ============================================================
-bot = Bot(token=BOT_TOKEN)
+
+bot = Bot(token=8855316623:AAHkT94L1SRyCdSC4PNXT4uB4y_HE_K79pA)
 dp = Dispatcher()
  
  
@@ -50,7 +47,7 @@ async def start_handler(message: types.Message):
  
 @app.on_event("startup")
 async def start_bot_polling():
-    # запускаем бота "фоновой задачей" рядом с веб-сервером, не блокируя его
+    
     asyncio.create_task(dp.start_polling(bot))
  
  
@@ -144,7 +141,7 @@ def case_items_endpoint(case_id: int, db: Session = Depends(get_db)):
             "value": item.value,
             "chance": round(ci.weight / total_weight * 100, 2),
         })
-    # сортируем от самого частого к самому редкому - удобнее смотреть
+    
     result.sort(key=lambda x: -x["chance"])
     return {"items": result}
  
@@ -189,5 +186,5 @@ def sell_endpoint(
         raise HTTPException(400, str(e))
  
  
-# отдаём frontend (index.html и всё, что внутри папки frontend) с той же ссылки, что и API
+
 app.mount("/", StaticFiles(directory="../frontend", html=True), name="frontend")
