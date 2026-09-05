@@ -78,7 +78,29 @@ def profile(user: User = Depends(get_current_user)):
         "level": user.level,
         "exp": user.exp,
         "username": user.username,
+        "cases_opened": user.cases_opened or 0,
+        "upgrades_done": user.upgrades_done or 0,
     }
+
+
+@app.get("/api/profile/drops")
+def profile_drops(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Лучший дроп за всё время + последние 10 дропов (кейсы + ежедневный бонус)."""
+    from database import DropLog
+
+    all_drops = db.query(DropLog).filter(DropLog.user_id == user.id).order_by(DropLog.created_at.desc()).all()
+
+    best = None
+    if all_drops:
+        best_row = max(all_drops, key=lambda d: d.item_value)
+        best = {"name": best_row.item_name, "rarity": best_row.item_rarity, "value": best_row.item_value}
+
+    recent = [
+        {"name": d.item_name, "rarity": d.item_rarity, "value": d.item_value, "source": d.source}
+        for d in all_drops[:10]
+    ]
+
+    return {"best": best, "recent": recent}
 
 
 @app.get("/api/inventory")
