@@ -5,7 +5,7 @@ from database import User, Item, InventoryItem
  
 DAILY_COOLDOWN_HOURS = 24
  
-# шансы выпадения по редкости (чем больше число - тем чаще выпадает)
+
 RARITY_WEIGHTS = {
     "common": 70,
     "rare": 20,
@@ -15,7 +15,7 @@ RARITY_WEIGHTS = {
  
  
 def seconds_until_next_claim(user: User) -> int:
-    """Сколько секунд осталось до следующего бесплатного кейса. 0 = можно открывать сейчас."""
+    
     if not user.last_daily_claim:
         return 0
     next_time = user.last_daily_claim + timedelta(hours=DAILY_COOLDOWN_HOURS)
