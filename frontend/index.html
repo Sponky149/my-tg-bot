@@ -1,9 +1,10 @@
+```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<meta name="theme-color" content="#07100e" />
+<meta name="theme-color" content="#08040d" />
 <title>BrainuP</title>
 <!-- Telegram WebApp SDK -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -13,20 +14,19 @@
      ПАЛИТРА — тёмный фиолетово-чёрный неон
      ============================================================ */
   :root {
-    --bg:        #08040d; /* Глубокий черный с фиолетовым отливом */
-    --bg-2:      #11091c; /* Темно-чернильный */
-    --card:      #160c24; /* Темно-фиолетовая карточка */
-    --card-2:    #221236; /* Чуть более светлая карточка */
-    --field:     #0d0617; /* Фон полей ввода */
-    --stroke:    #2f1947; /* Фиолетовая обводка элементов */
-    --text:      #f7f2ff; /* Почти белый с легким фиолетовым оттенком */
-    --muted:     #8f7da3; /* Приглушенный фиолетово-серый текст */
+    --bg:        #08040d;
+    --bg-2:      #11091c;
+    --card:      #160c24;
+    --card-2:    #221236;
+    --field:     #0d0617;
+    --stroke:    #3a2055;
+    --text:      #f7f2ff;
+    --muted:     #9b8aaa;
 
-    /* Акцентные неоновые цвета */
-    --lime:      #d63dff; /* Яркий неоновый фиолетовый (вместо лайма) */
-    --emerald:   #ff2ee3; /* Кислотная маджента / фуксия (вместо изумруда) */
-    --cyan:      #3399ff; /* Неоновый синий для контраста (вместо бирюзы) */
-    --danger:    #ff4d4d; /* Насыщенный красный для ошибок */
+    --lime:      #d63dff;
+    --emerald:   #ff2ee3;
+    --cyan:      #8b5cff;
+    --danger:    #ff4d7d;
 
     --radius:    18px;
     --radius-sm: 12px;
@@ -49,8 +49,8 @@
     min-height: 100vh;
     padding: 0 16px 110px;
     background:
-      radial-gradient(90% 40% at 50% -5%, rgba(182,255,61,0.12), transparent 60%),
-      radial-gradient(70% 50% at 100% 20%, rgba(35,213,224,0.08), transparent 60%),
+      radial-gradient(90% 40% at 50% -5%, rgba(214,61,255,0.16), transparent 60%),
+      radial-gradient(70% 50% at 100% 20%, rgba(139,92,255,0.12), transparent 60%),
       var(--bg);
   }
 
@@ -63,8 +63,8 @@
     width: 40px; height: 40px; border-radius: 12px;
     background: linear-gradient(145deg, var(--lime), var(--emerald));
     display: flex; align-items: center; justify-content: center;
-    font-weight: 900; font-size: 22px; color: #04160e;
-    box-shadow: 0 6px 20px rgba(182,255,61,0.35);
+    font-weight: 900; font-size: 22px; color: #12051a;
+    box-shadow: 0 6px 20px rgba(214,61,255,0.35);
   }
   .brand-name { font-size: 21px; font-weight: 900; letter-spacing: 0.3px; }
   .brand-name .u { color: var(--lime); }
@@ -79,7 +79,7 @@
   .balance .add {
     width: 26px; height: 26px; border-radius: 50%; border: none;
     background: linear-gradient(145deg, var(--lime), var(--emerald));
-    color: #04160e; font-size: 20px; font-weight: 900;
+    color: #12051a; font-size: 20px; font-weight: 900;
     display: flex; align-items: center; justify-content: center;
   }
 
@@ -102,9 +102,9 @@
 
   .wheel {
     width: 260px; height: 260px; border-radius: 50%;
-    background: conic-gradient(var(--emerald) 0deg 180deg, #10241d 180deg 360deg);
+    background: conic-gradient(var(--emerald) 0deg 180deg, #241331 180deg 360deg);
     border: 3px solid var(--stroke);
-    box-shadow: inset 0 0 0 2px rgba(0,0,0,0.4), 0 0 50px rgba(34,227,154,0.15);
+    box-shadow: inset 0 0 0 2px rgba(0,0,0,0.4), 0 0 50px rgba(255,46,227,0.15);
   }
 
   .needle-rotor {
@@ -119,17 +119,17 @@
     border-left: 14px solid transparent;
     border-right: 14px solid transparent;
     border-top: 40px solid var(--lime);
-    filter: drop-shadow(0 0 10px rgba(182,255,61,0.9));
+    filter: drop-shadow(0 0 10px rgba(214,61,255,0.9));
   }
   .needle-dot {
     position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
     width: 22px; height: 22px; border-radius: 50%;
-    background: var(--lime); box-shadow: 0 0 14px rgba(182,255,61,0.8);
+    background: var(--lime); box-shadow: 0 0 14px rgba(214,61,255,0.8);
   }
 
   .wheel-hub {
     position: absolute; inset: 46px; border-radius: 50%; z-index: 2;
-    background: radial-gradient(circle at 50% 40%, #0e2019, #06100d 80%);
+    background: radial-gradient(circle at 50% 40%, #241035, #0b0412 80%);
     border: 1px solid var(--stroke);
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     pointer-events: none;
@@ -147,7 +147,7 @@
     display: flex; flex-direction: column; align-items: center; gap: 6px;
     min-height: 118px; justify-content: center;
   }
-  .slot.want { border-color: rgba(34,227,154,0.4); }
+  .slot.want { border-color: rgba(255,46,227,0.4); }
   .slot .slot-cap { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
   .slot .slot-emoji { font-size: 40px; line-height: 1; }
   .slot .slot-name { font-size: 13.5px; font-weight: 800; }
@@ -161,9 +161,9 @@
   .upgrade-btn {
     width: 100%; margin-top: 14px; border: none;
     background: linear-gradient(145deg, var(--lime), var(--emerald));
-    color: #04160e; font-weight: 900; font-size: 18px; letter-spacing: 0.5px;
+    color: #12051a; font-weight: 900; font-size: 18px; letter-spacing: 0.5px;
     padding: 17px; border-radius: var(--radius);
-    box-shadow: 0 8px 24px rgba(34,227,154,0.4);
+    box-shadow: 0 8px 24px rgba(255,46,227,0.4);
     display: flex; align-items: center; justify-content: center; gap: 8px;
   }
   .upgrade-btn:disabled { opacity: 0.45; filter: grayscale(0.4); box-shadow: none; cursor: default; }
@@ -176,13 +176,13 @@
   }
   .case-emoji {
     font-size: 46px; line-height: 1;
-    filter: drop-shadow(0 6px 14px rgba(34,227,154,0.25));
+    filter: drop-shadow(0 6px 14px rgba(255,46,227,0.25));
   }
   .case-name { font-size: 15px; font-weight: 800; }
   .case-open {
     margin-top: 4px; width: 100%; border: none; border-radius: var(--radius-sm);
     background: linear-gradient(145deg, var(--lime), var(--emerald));
-    color: #04160e; font-weight: 900; font-size: 14px; padding: 11px 0;
+    color: #12051a; font-weight: 900; font-size: 14px; padding: 11px 0;
     display: flex; align-items: center; justify-content: center; gap: 6px;
   }
 
@@ -191,8 +191,8 @@
     width: 56px; height: 56px; border-radius: 16px; flex-shrink: 0;
     background: linear-gradient(145deg, var(--cyan), var(--emerald));
     display: flex; align-items: center; justify-content: center;
-    font-size: 26px; font-weight: 900; color: #04160e;
-    box-shadow: 0 6px 20px rgba(34,213,224,0.3);
+    font-size: 26px; font-weight: 900; color: #12051a;
+    box-shadow: 0 6px 20px rgba(139,92,255,0.3);
   }
   .id-info { min-width: 0; }
   .id-value { font-size: 22px; font-weight: 900; margin-top: 3px; font-variant-numeric: tabular-nums; }
@@ -215,7 +215,7 @@
   .promo-input::placeholder { color: var(--muted); }
   .promo-btn {
     border: none; background: linear-gradient(145deg, var(--lime), var(--emerald));
-    color: #04160e; font-weight: 900; font-size: 14px; letter-spacing: 0.5px;
+    color: #12051a; font-weight: 900; font-size: 14px; letter-spacing: 0.5px;
     padding: 0 20px; border-radius: var(--radius-sm);
   }
   .promo-msg { font-size: 13.5px; font-weight: 700; margin-top: 10px; min-height: 18px; }
@@ -227,7 +227,7 @@
     width: 100%; max-width: 480px; z-index: 50;
     display: flex; gap: 6px;
     padding: 8px 14px calc(10px + env(safe-area-inset-bottom, 0px));
-    background: linear-gradient(180deg, rgba(6,16,13,0.4), var(--bg) 40%);
+    background: linear-gradient(180deg, rgba(8,4,13,0.4), var(--bg) 40%);
     backdrop-filter: blur(12px);
     border-top: 1px solid var(--stroke);
   }
@@ -241,7 +241,7 @@
   .nav-btn .nav-ic { font-size: 22px; line-height: 1; }
   .nav-btn.active {
     color: var(--lime);
-    background: rgba(182,255,61,0.08);
+    background: rgba(214,61,255,0.08);
   }
   .nav-btn:active { transform: scale(0.94); }
 
@@ -286,7 +286,7 @@
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
   /* ============================================================
-     СОДЕРЖИМОЕ КЕЙСА (список предметов с шансами)
+     СОДЕРЖИМОЕ КЕЙСА
      ============================================================ */
   .odds-row {
     display: flex; align-items: center; gap: 10px;
@@ -299,11 +299,11 @@
   .odds-chance { font-size: 12px; color: var(--muted); font-weight: 700; min-width: 46px; text-align: right; }
 
   /* ============================================================
-     АНИМАЦИЯ ОТКРЫТИЯ КЕЙСА - крутящаяся лента
+     АНИМАЦИЯ ОТКРЫТИЯ КЕЙСА
      ============================================================ */
   .case-open-overlay {
     position: fixed; inset: 0; z-index: 400;
-    background: rgba(0,0,0,0.85); display: flex; flex-direction: column;
+    background: rgba(5,2,9,0.9); display: flex; flex-direction: column;
     align-items: center; justify-content: center;
     opacity: 0; pointer-events: none; transition: opacity .2s ease;
   }
@@ -317,7 +317,7 @@
   .reel-marker {
     position: absolute; top: 0; bottom: 0; left: 50%; transform: translateX(-50%);
     width: 3px; background: var(--lime); z-index: 5;
-    box-shadow: 0 0 12px rgba(182,255,61,0.8);
+    box-shadow: 0 0 12px rgba(214,61,255,0.8);
   }
   .reel-track {
     position: absolute; top: 0; left: 0; height: 100%;
@@ -332,9 +332,9 @@
   .reel-item .re-emoji { font-size: 34px; }
   .reel-item .re-value { font-size: 11px; color: var(--lime); font-weight: 800; }
   .reel-item.re-common { border-color: var(--stroke); }
-  .reel-item.re-rare { border-color: rgba(35,213,224,0.5); }
-  .reel-item.re-epic { border-color: rgba(182,255,61,0.5); }
-  .reel-item.re-legendary { border-color: rgba(255,77,109,0.6); box-shadow: 0 0 16px rgba(255,77,109,0.25); }
+  .reel-item.re-rare { border-color: rgba(139,92,255,0.5); }
+  .reel-item.re-epic { border-color: rgba(214,61,255,0.5); }
+  .reel-item.re-legendary { border-color: rgba(255,46,227,0.6); box-shadow: 0 0 16px rgba(255,46,227,0.25); }
 
   .reel-result {
     margin-top: 22px; font-size: 20px; font-weight: 900; text-align: center; min-height: 28px;
@@ -445,7 +445,6 @@
     </div>
   </div>
 
-  <!-- Содержимое кейса (список предметов + шансы) -->
   <div class="sheet-overlay" id="oddsOverlay">
     <div class="sheet">
       <div class="sheet-handle"></div>
@@ -454,7 +453,6 @@
     </div>
   </div>
 
-  <!-- Анимация открытия кейса -->
   <div class="case-open-overlay" id="caseOpenOverlay">
     <div class="reel-viewport">
       <div class="reel-marker"></div>
@@ -467,15 +465,8 @@
   <div class="toast" id="toast"></div>
 
 <script>
-  /* ============================================================
-     Пустая строка = запросы идут на тот же адрес, откуда открыт сайт.
-     Это работает, потому что backend теперь сам раздаёт эту страницу.
-     Меняй только если фронт и backend будут на РАЗНЫХ адресах.
-     ============================================================ */
   const API_URL = "";
 
-  /* Эмодзи по редкости предмета — backend хранит только rarity (текст),
-     а не картинку/эмодзи, поэтому подбираем эмодзи сами по редкости. */
   const RARITY_EMOJI = {
     common: '🥥',
     rare: '🐸',
@@ -484,18 +475,15 @@
   };
   function emojiFor(rarity) { return RARITY_EMOJI[rarity] || '❔'; }
 
-  /* ============================================================
-     СОСТОЯНИЕ
-     ============================================================ */
   const state = {
     balance: 0,
     tgId: null,
     upgrades: 0,
-    inventory: [],   // предметы игрока: {inventory_item_id, item_id, name, rarity, value}
-    allItems: [],    // все предметы игры: {id, name, rarity, value}
-    cases: [],       // список платных кейсов: {id, name, price}
-    haveInvId: null, // выбранный inventory_item_id (что ставим на апгрейд)
-    wantItemId: null,// выбранный item_id (что хотим получить)
+    inventory: [],
+    allItems: [],
+    cases: [],
+    haveInvId: null,
+    wantItemId: null,
     chance: 0,
     spinning: false,
     rotation: 0,
@@ -504,7 +492,6 @@
 
   const $ = (id) => document.getElementById(id);
 
-  /* ---------- ЗАПРОСЫ К BACKEND ---------- */
   const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
 
   async function api(path, options = {}) {
@@ -518,7 +505,6 @@
     return data;
   }
 
-  /* ---------- ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК (нижний бар) ---------- */
   document.querySelectorAll('.nav-btn').forEach((btn) => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.nav-btn').forEach((b) => b.classList.remove('active'));
@@ -528,7 +514,6 @@
     });
   });
 
-  /* ---------- ЕЖЕДНЕВНЫЙ БЕСПЛАТНЫЙ КЕЙС ---------- */
   let dailyTimer = null;
 
   function updateDailyUI(data) {
@@ -584,7 +569,6 @@
     }
   });
 
-  /* ---------- ПЛАТНЫЕ КЕЙСЫ ---------- */
   function renderCases() {
     if (!state.cases.length) {
       $('casesGrid').innerHTML = `<div class="pick-empty">Кейсов пока нет</div>`;
@@ -598,12 +582,10 @@
       </div>
     `).join('');
 
-    // тап по названию/иконке - показать содержимое кейса (шансы + цены)
     document.querySelectorAll('[data-info]').forEach((el) => {
       el.addEventListener('click', () => showCaseOdds(el.dataset.info, el.dataset.name));
     });
 
-    // тап по кнопке с ценой - открыть кейс с анимацией
     document.querySelectorAll('[data-open]').forEach((b) => {
       b.addEventListener('click', () => openCaseWithAnimation(b.dataset.open));
     });
@@ -619,7 +601,6 @@
     }
   }
 
-  /* ---------- СОДЕРЖИМОЕ КЕЙСА (список + шансы) ---------- */
   async function showCaseOdds(caseId, caseName) {
     $('oddsTitle').textContent = caseName;
     $('oddsList').innerHTML = `<div class="pick-empty">Загрузка...</div>`;
@@ -642,13 +623,11 @@
     if (e.target === $('oddsOverlay')) $('oddsOverlay').classList.remove('show');
   });
 
-  /* ---------- АНИМАЦИЯ ОТКРЫТИЯ КЕЙСА (крутящаяся лента) ---------- */
-  const REEL_ITEM_WIDTH = 104; // 92px карточка + 6px*2 отступа
-  const REEL_LENGTH = 40;      // сколько карточек всего крутится в ленте
-  const REEL_WIN_INDEX = 34;   // на какой по счёту карточке останавливаемся
+  const REEL_ITEM_WIDTH = 104;
+  const REEL_LENGTH = 40;
+  const REEL_WIN_INDEX = 34;
 
   async function openCaseWithAnimation(caseId) {
-    // сначала спрашиваем backend, что реально выпало (и списываем валюту)
     let result;
     try {
       result = await api(`/api/cases/${caseId}/open`, { method: 'POST' });
@@ -657,7 +636,6 @@
       return;
     }
 
-    // берём пул предметов этого кейса, чтобы визуально заполнить ленту
     let pool = [];
     try {
       const data = await api(`/api/cases/${caseId}/items`);
@@ -666,7 +644,6 @@
       pool = [{ name: result.item.name, rarity: result.item.rarity, value: 0 }];
     }
 
-    // строим ленту: случайные предметы из пула, а на "выигрышном" месте - настоящий приз
     const track = [];
     for (let i = 0; i < REEL_LENGTH; i++) {
       if (i === REEL_WIN_INDEX) {
@@ -683,7 +660,6 @@
       </div>
     `).join('');
 
-    // сбрасываем позицию ленты мгновенно (без анимации) перед стартом
     const trackEl = $('reelTrack');
     trackEl.style.transition = 'none';
     trackEl.style.transform = 'translateX(0px)';
@@ -691,7 +667,6 @@
     $('reelCloseBtn').classList.remove('show');
     $('caseOpenOverlay').classList.add('show');
 
-    // ждём кадр, чтобы браузер применил сброс, потом запускаем анимацию к нужной карточке
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         const viewportWidth = trackEl.parentElement.clientWidth;
@@ -713,22 +688,19 @@
     await loadInventory();
   });
 
-  /* ---------- КОЛЕСО ---------- */
   const wheelEl = $('wheel');
   const rotorEl = $('rotor');
 
   function renderWheel() {
     const deg = state.chance / 100 * 360;
     wheelEl.style.background =
-      `conic-gradient(var(--emerald) 0deg ${deg}deg, #10241d ${deg}deg 360deg)`;
+      `conic-gradient(var(--emerald) 0deg ${deg}deg, #241331 ${deg}deg 360deg)`;
     $('wheelPct').textContent = state.chance ? state.chance + '%' : '—';
   }
 
   function getHave() { return state.inventory.find((i) => i.inventory_item_id == state.haveInvId) || null; }
   function getWant() { return state.allItems.find((i) => i.id == state.wantItemId) || null; }
 
-  /* Локальный превью-расчёт шанса (та же формула, что и на backend, для отображения ДО нажатия кнопки).
-     Итоговый результат апгрейда всегда решает backend, а не эта формула. */
   function computeChance(have, want) {
     if (!have || !want || want.value <= 0) return 0;
     let chance = (have.value / want.value) * 0.9 * 100;
@@ -765,8 +737,7 @@
     renderWheel();
   }
 
-  /* ---------- BOTTOM-SHEET ВЫБОРА ПРЕДМЕТА ---------- */
-  let pickMode = null; // 'have' | 'want'
+  let pickMode = null;
 
   function openPicker(mode) {
     if (state.spinning) return;
@@ -806,7 +777,6 @@
   $('slotWant').addEventListener('click', () => openPicker('want'));
   $('sheetOverlay').addEventListener('click', (e) => { if (e.target === $('sheetOverlay')) closePicker(); });
 
-  /* ---------- КРУТИМ: сначала спрашиваем backend, потом просто АНИМИРУЕМ его ответ ---------- */
   async function spin() {
     if (state.spinning) return;
     const have = getHave();
@@ -831,7 +801,6 @@
       return;
     }
 
-    // backend уже всё решил (result.success) - анимация просто ПОКАЗЫВАЕТ настоящий исход
     const chanceDeg = state.chance / 100 * 360;
     const win = result.success;
     const target = win
@@ -865,7 +834,6 @@
   }
   $('upgradeBtn').addEventListener('click', spin);
 
-  /* ---------- ПРОМОКОД (пока не подключён к backend) ---------- */
   $('promoBtn').addEventListener('click', () => {
     const code = $('promoInput').value.trim();
     const msg = $('promoMsg');
@@ -875,7 +843,6 @@
     $('promoInput').value = '';
   });
 
-  /* ---------- ТОСТ / ПОПОЛНЕНИЕ ---------- */
   function showToast(text) {
     const t = $('toast');
     t.textContent = text; t.classList.add('show');
@@ -886,7 +853,6 @@
     showToast('Пополнение баланса скоро будет доступно');
   });
 
-  /* ---------- ЗАГРУЗКА ДАННЫХ С BACKEND ---------- */
   async function loadProfile() {
     try {
       const data = await api('/api/profile');
@@ -912,7 +878,7 @@
   function initTelegram() {
     if (!tg) return;
     tg.ready(); tg.expand();
-    try { tg.setHeaderColor('#06100d'); tg.setBackgroundColor('#06100d'); } catch (e) {}
+    try { tg.setHeaderColor('#08040d'); tg.setBackgroundColor('#08040d'); } catch (e) {}
     try { tg.disableVerticalSwipes && tg.disableVerticalSwipes(); } catch (e) {}
     const u = tg.initDataUnsafe && tg.initDataUnsafe.user;
     if (u) { state.tgId = u.id; state._name = (u.first_name || '').trim(); }
@@ -934,3 +900,4 @@
 </script>
 </body>
 </html>
+```
