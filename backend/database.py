@@ -12,7 +12,7 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     telegram_id = Column(Integer, unique=True, index=True)
     username = Column(String, nullable=True)
-    balance = Column(Float, default=100.0)
+    balance = Column(Float, default=300.0)
     level = Column(Integer, default=1)
     exp = Column(Integer, default=0)
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -65,4 +65,3 @@ def get_db():
         yield db
     finally:
         db.close()
- 
