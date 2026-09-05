@@ -30,6 +30,8 @@ class User(Base):
     exp = Column(Integer, default=0)
     created_at = Column(DateTime, default=datetime.utcnow)
     last_daily_claim = Column(DateTime, nullable=True)
+    cases_opened = Column(Integer, default=0)
+    upgrades_done = Column(Integer, default=0)
 
     inventory = relationship("InventoryItem", back_populates="owner")
 
@@ -68,6 +70,19 @@ class CaseItem(Base):
     case_id = Column(Integer, ForeignKey("cases.id"))
     item_id = Column(Integer, ForeignKey("items.id"))
     weight = Column(Float)
+
+
+class DropLog(Base):
+    """Журнал всех выпадений (кейсы + ежедневный бонус) - нужен для
+    'Последних дропов' и 'Лучшего дропа' в профиле."""
+    __tablename__ = "drop_log"
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"), index=True)
+    item_name = Column(String)
+    item_rarity = Column(String)
+    item_value = Column(Float)
+    source = Column(String)  # "case" или "daily"
+    created_at = Column(DateTime, default=datetime.utcnow)
 
 
 Base.metadata.create_all(engine)
