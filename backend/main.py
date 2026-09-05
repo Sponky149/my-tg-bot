@@ -15,8 +15,8 @@ from upgrade import perform_upgrade
 from sell import sell_item
 from cases import open_case
  
-BOT_TOKEN = os.getenv("8855316623:AAHkT94L1SRyCdSC4PNXT4uB4y_HE_K79pA")
-WEBAPP_URL = os.getenv("https://t.me/BrainrotUpper_bot/upgrade")
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+WEBAPP_URL = os.getenv("WEBAPP_URL")
  
 app = FastAPI()
  
@@ -28,7 +28,7 @@ app.add_middleware(
 )
  
 
-bot = Bot(token=8855316623:AAHkT94L1SRyCdSC4PNXT4uB4y_HE_K79pA)
+bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
  
  
@@ -88,6 +88,7 @@ def get_inventory(user: User = Depends(get_current_user)):
             "name": inv.item.name,
             "rarity": inv.item.rarity,
             "value": inv.item.value,
+            "image_url": inv.item.image_url,
         })
     return {"inventory": items}
  
@@ -96,7 +97,7 @@ def get_inventory(user: User = Depends(get_current_user)):
 def get_all_items(db: Session = Depends(get_db)):
     items = db.query(Item).all()
     return {"items": [
-        {"id": i.id, "name": i.name, "rarity": i.rarity, "value": i.value}
+        {"id": i.id, "name": i.name, "rarity": i.rarity, "value": i.value, "image_url": i.image_url}
         for i in items
     ]}
  
@@ -111,7 +112,7 @@ def daily_status(user: User = Depends(get_current_user)):
 def daily_open(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     try:
         item = open_daily_case(db, user)
-        return {"success": True, "item": {"name": item.name, "rarity": item.rarity}}
+        return {"success": True, "item": {"name": item.name, "rarity": item.rarity, "value": item.value, "image_url": item.image_url}}
     except ValueError as e:
         raise HTTPException(400, str(e))
  
@@ -121,7 +122,7 @@ def list_cases(db: Session = Depends(get_db)):
     from database import Case
     cases = db.query(Case).all()
     return {"cases": [
-        {"id": c.id, "name": c.name, "price": c.price} for c in cases
+        {"id": c.id, "name": c.name, "price": c.price, "image_url": c.image_url} for c in cases
     ]}
  
  
@@ -139,6 +140,7 @@ def case_items_endpoint(case_id: int, db: Session = Depends(get_db)):
             "name": item.name,
             "rarity": item.rarity,
             "value": item.value,
+            "image_url": item.image_url,
             "chance": round(ci.weight / total_weight * 100, 2),
         })
     
@@ -154,7 +156,7 @@ def open_case_endpoint(
 ):
     try:
         item = open_case(db, user, case_id)
-        return {"success": True, "item": {"name": item.name, "rarity": item.rarity}}
+        return {"success": True, "item": {"name": item.name, "rarity": item.rarity, "value": item.value, "image_url": item.image_url}}
     except ValueError as e:
         raise HTTPException(400, str(e))
  
