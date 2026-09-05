@@ -314,6 +314,35 @@
   .inv-sell-btn:active { transform: scale(0.95); }
 
   /* ============================================================
+     ПРОФИЛЬ - парные карточки статистики, лучший дроп, поддержка
+     ============================================================ */
+  .stat-pair { display: flex; gap: 12px; margin-top: 14px; }
+  .stat-box { flex: 1; text-align: center; padding: 18px 10px; }
+
+  .best-drop-card { margin-top: 14px; }
+  .best-drop-row { display: flex; align-items: center; gap: 12px; }
+  .best-drop-emoji { font-size: 34px; }
+  .best-drop-name { font-weight: 800; font-size: 14.5px; }
+  .best-drop-value { font-size: 12.5px; color: var(--lime); font-weight: 800; }
+
+  .support-btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    margin-top: 14px; padding: 15px; border-radius: var(--radius);
+    background: linear-gradient(135deg, var(--cyan), var(--emerald));
+    color: #fff; font-weight: 900; font-size: 15px; text-decoration: none;
+  }
+
+  .recent-drop-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 4px; border-bottom: 1px solid var(--stroke);
+  }
+  .recent-drop-row:last-child { border-bottom: none; }
+  .recent-drop-emoji { font-size: 22px; width: 28px; text-align: center; }
+  .recent-drop-name { flex: 1; font-size: 13px; font-weight: 700; }
+  .recent-drop-value { font-size: 12px; color: var(--lime); font-weight: 800; }
+  .recent-drop-source { font-size: 10.5px; color: var(--muted); font-weight: 700; text-transform: uppercase; }
+
+  /* ============================================================
      АНИМАЦИЯ ОТКРЫТИЯ КЕЙСА - крутящаяся лента
      ============================================================ */
   .case-open-overlay {
@@ -432,19 +461,40 @@
     <div class="card id-card">
       <div class="id-avatar" id="idAvatar">U</div>
       <div class="id-info">
-        <div class="label">Telegram ID</div>
-        <div class="id-value" id="profileId">—</div>
+        <div class="label">Профиль</div>
+        <div class="id-value" id="profileName" style="font-size:17px;">—</div>
+        <div class="label" style="margin-top:4px;">Telegram ID: <span id="profileId">—</span></div>
       </div>
+    </div>
+
+    <div class="stat-pair">
+      <div class="card stat-box">
+        <div class="upg-num" id="statCases" style="font-size:32px;">0</div>
+        <div class="label">🎁 Открыто кейсов</div>
+      </div>
+      <div class="card stat-box">
+        <div class="upg-num" id="statUpgrades" style="font-size:32px;">0</div>
+        <div class="label">⚡ Апгрейдов</div>
+      </div>
+    </div>
+
+    <div class="card best-drop-card">
+      <div class="label">🏆 Лучший дроп</div>
+      <div id="bestDropRow" style="margin-top:10px;">
+        <div class="pick-empty">Пока нет дропов</div>
+      </div>
+    </div>
+
+    <a href="https://t.me/" target="_blank" class="support-btn press">💬 Поддержка</a>
+
+    <div class="section-title">🕐 Последние дропы</div>
+    <div class="card" id="recentDropsCard">
+      <div class="pick-empty">Пока нет дропов</div>
     </div>
 
     <div class="section-title">Инвентарь</div>
     <div class="card" id="inventoryCard">
       <div class="pick-empty">Пока пусто</div>
-    </div>
-
-    <div class="card upg-stat">
-      <div class="upg-num" id="statUpgrades">0</div>
-      <div class="label">Сделано апгрейдов</div>
     </div>
 
     <div class="card">
@@ -614,6 +664,7 @@
       await loadProfile();
       await loadInventory();
       await loadDailyStatus();
+      await loadDrops();
     } catch (e) {
       showToast(e.message);
     }
@@ -745,6 +796,7 @@
     $('caseOpenOverlay').classList.remove('show');
     await loadProfile();
     await loadInventory();
+    await loadDrops();
   });
 
   /* ---------- КОЛЕСО ---------- */
@@ -927,8 +979,45 @@
       state.balance = data.balance;
       $('balanceValue').textContent = Math.round(state.balance);
       $('profileId').textContent = state.tgId != null ? state.tgId : 'Не определён';
+      $('profileName').textContent = state._name ? '@' + (state.tgUsername || state._name) : 'Игрок';
+      $('statCases').textContent = data.cases_opened;
+      $('statUpgrades').textContent = data.upgrades_done;
     } catch (e) {
       showToast('Не удалось загрузить профиль');
+    }
+  }
+
+  async function loadDrops() {
+    try {
+      const data = await api('/api/profile/drops');
+
+      if (data.best) {
+        $('bestDropRow').innerHTML = `
+          <div class="best-drop-row">
+            <div class="best-drop-emoji">${mediaFor(data.best, 'media-odds')}</div>
+            <div>
+              <div class="best-drop-name">${data.best.name}</div>
+              <div class="best-drop-value">🪙 ${data.best.value}</div>
+            </div>
+          </div>`;
+      } else {
+        $('bestDropRow').innerHTML = `<div class="pick-empty">Пока нет дропов</div>`;
+      }
+
+      if (data.recent.length) {
+        $('recentDropsCard').innerHTML = data.recent.map((d) => `
+          <div class="recent-drop-row">
+            <div class="recent-drop-emoji">${mediaFor(d, 'media-odds')}</div>
+            <div class="recent-drop-name">${d.name}</div>
+            <div class="recent-drop-source">${d.source === 'daily' ? 'бонус' : 'кейс'}</div>
+            <div class="recent-drop-value">🪙 ${d.value}</div>
+          </div>
+        `).join('');
+      } else {
+        $('recentDropsCard').innerHTML = `<div class="pick-empty">Пока нет дропов</div>`;
+      }
+    } catch (e) {
+      // тихо игнорируем - это не критично для игры
     }
   }
 
@@ -980,7 +1069,11 @@
     try { tg.setHeaderColor('#0a0614'); tg.setBackgroundColor('#0a0614'); } catch (e) {}
     try { tg.disableVerticalSwipes && tg.disableVerticalSwipes(); } catch (e) {}
     const u = tg.initDataUnsafe && tg.initDataUnsafe.user;
-    if (u) { state.tgId = u.id; state._name = (u.first_name || '').trim(); }
+    if (u) {
+      state.tgId = u.id;
+      state._name = (u.first_name || '').trim();
+      state.tgUsername = u.username || '';
+    }
   }
 
   async function boot() {
@@ -989,6 +1082,7 @@
     await loadInventory();
     await loadDailyStatus();
     await loadCases();
+    await loadDrops();
     renderSlots();
     const av = state._name ? state._name[0].toUpperCase()
              : (state.tgId ? String(state.tgId).slice(-1) : 'U');
