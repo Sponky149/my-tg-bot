@@ -4,7 +4,7 @@ from database import User, Item, InventoryItem
  
  
 def get_upgrade_chance(source_value: float, target_value: float) -> float:
-    """Считает шанс успеха апгрейда в процентах (0-100)."""
+    
     house_edge = 0.9
     raw_chance = (source_value / target_value) * house_edge
     chance = min(raw_chance, 0.95)
