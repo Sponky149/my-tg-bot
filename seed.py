@@ -5,7 +5,7 @@ from backend.database import SessionLocal, Item
  
 db = SessionLocal()
  
-# проверяем, не наполнена ли база уже (чтобы не плодить дубли при повторном запуске)
+
 existing = db.query(Item).count()
 if existing > 0:
     print(f"В базе уже есть {existing} предметов, ничего не добавляю.")
