@@ -13,6 +13,7 @@ from auth import validate_init_data
 from daily import open_daily_case, seconds_until_next_claim
 from upgrade import perform_upgrade
 from sell import sell_item
+from cases import open_case
  
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 WEBAPP_URL = os.getenv("WEBAPP_URL")
@@ -26,7 +27,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
  
-
+# ============================================================
+# ТЕЛЕГРАМ-БОТ - работает ВНУТРИ этого же веб-сервера,
+# чтобы уместиться в один бесплатный Web Service на Render
+# ============================================================
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
  
@@ -46,7 +50,7 @@ async def start_handler(message: types.Message):
  
 @app.on_event("startup")
 async def start_bot_polling():
-    
+    # запускаем бота "фоновой задачей" рядом с веб-сервером, не блокируя его
     asyncio.create_task(dp.start_polling(bot))
  
  
@@ -115,6 +119,28 @@ def daily_open(user: User = Depends(get_current_user), db: Session = Depends(get
         raise HTTPException(400, str(e))
  
  
+@app.get("/api/cases")
+def list_cases(db: Session = Depends(get_db)):
+    from database import Case
+    cases = db.query(Case).all()
+    return {"cases": [
+        {"id": c.id, "name": c.name, "price": c.price} for c in cases
+    ]}
+ 
+ 
+@app.post("/api/cases/{case_id}/open")
+def open_case_endpoint(
+    case_id: int,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    try:
+        item = open_case(db, user, case_id)
+        return {"success": True, "item": {"name": item.name, "rarity": item.rarity}}
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+ 
+ 
 @app.post("/api/upgrade")
 def upgrade_endpoint(
     inventory_item_id: int,
@@ -142,5 +168,5 @@ def sell_endpoint(
         raise HTTPException(400, str(e))
  
  
-
+# отдаём frontend (index.html и всё, что внутри папки frontend) с той же ссылки, что и API
 app.mount("/", StaticFiles(directory="../frontend", html=True), name="frontend")
