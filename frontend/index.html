@@ -296,6 +296,24 @@
   .odds-chance { font-size: 12px; color: var(--muted); font-weight: 700; min-width: 46px; text-align: right; }
 
   /* ============================================================
+     ИНВЕНТАРЬ (профиль) - строка предмета с кнопкой продажи
+     ============================================================ */
+  .inv-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 4px; border-bottom: 1px solid var(--stroke);
+  }
+  .inv-row:last-child { border-bottom: none; }
+  .inv-emoji { font-size: 26px; width: 32px; text-align: center; }
+  .inv-name { flex: 1; font-size: 13.5px; font-weight: 700; }
+  .inv-value { font-size: 12px; color: var(--lime); font-weight: 800; margin-right: 4px; }
+  .inv-sell-btn {
+    border: none; background: var(--card-2); border: 1px solid var(--stroke);
+    color: var(--text); font-weight: 800; font-size: 12px;
+    padding: 8px 12px; border-radius: 10px; white-space: nowrap;
+  }
+  .inv-sell-btn:active { transform: scale(0.95); }
+
+  /* ============================================================
      АНИМАЦИЯ ОТКРЫТИЯ КЕЙСА - крутящаяся лента
      ============================================================ */
   .case-open-overlay {
@@ -417,6 +435,11 @@
         <div class="label">Telegram ID</div>
         <div class="id-value" id="profileId">—</div>
       </div>
+    </div>
+
+    <div class="section-title">Инвентарь</div>
+    <div class="card" id="inventoryCard">
+      <div class="pick-empty">Пока пусто</div>
     </div>
 
     <div class="card upg-stat">
@@ -915,15 +938,46 @@
       state.inventory = inv.inventory;
       const items = await api('/api/items');
       state.allItems = items.items;
+      renderInventoryTab();
     } catch (e) {
       showToast('Не удалось загрузить инвентарь');
     }
   }
 
+  /* ---------- ВКЛАДКА ИНВЕНТАРЬ (в профиле) ---------- */
+  function renderInventoryTab() {
+    if (!state.inventory.length) {
+      $('inventoryCard').innerHTML = `<div class="pick-empty">Пока пусто — открой кейс</div>`;
+      return;
+    }
+    $('inventoryCard').innerHTML = state.inventory.map((it) => `
+      <div class="inv-row">
+        <div class="inv-emoji">${mediaFor(it, "media-odds")}</div>
+        <div class="inv-name">${it.name}</div>
+        <div class="inv-value">🪙 ${it.value}</div>
+        <button class="inv-sell-btn press" data-sell="${it.inventory_item_id}">Продать</button>
+      </div>
+    `).join('');
+
+    document.querySelectorAll('[data-sell]').forEach((b) => {
+      b.addEventListener('click', async () => {
+        const invId = b.dataset.sell;
+        try {
+          const data = await api(`/api/sell?inventory_item_id=${invId}`, { method: 'POST' });
+          showToast(`Продано за 🪙 ${data.payout}`);
+          await loadProfile();
+          await loadInventory();
+        } catch (e) {
+          showToast(e.message);
+        }
+      });
+    });
+  }
+
   function initTelegram() {
     if (!tg) return;
     tg.ready(); tg.expand();
-    try { tg.setHeaderColor('#06100d'); tg.setBackgroundColor('#06100d'); } catch (e) {}
+    try { tg.setHeaderColor('#0a0614'); tg.setBackgroundColor('#0a0614'); } catch (e) {}
     try { tg.disableVerticalSwipes && tg.disableVerticalSwipes(); } catch (e) {}
     const u = tg.initDataUnsafe && tg.initDataUnsafe.user;
     if (u) { state.tgId = u.id; state._name = (u.first_name || '').trim(); }
