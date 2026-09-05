@@ -9,11 +9,7 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
  
  
 def validate_init_data(init_data: str) -> dict | None:
-    """
-    Telegram Mini App при открытии присылает строку initData,
-    подписанную секретным ключом на основе токена бота.
-    Мы пересчитываем подпись сами и сверяем - совпало = запрос настоящий.
-    """
+    
     try:
         parsed = dict(parse_qsl(init_data))
         received_hash = parsed.pop("hash", None)
