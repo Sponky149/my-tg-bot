@@ -8,7 +8,9 @@
 <!-- Telegram WebApp SDK -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-  
+  /* ============================================================
+     ПАЛИТРА — тёмный изумрудно-кислотный неон
+     ============================================================ */
   :root {
     --bg:        #06100d;
     --bg-2:      #0a1a15;
@@ -279,6 +281,67 @@
     max-width: 90vw; text-align: center;
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ============================================================
+     СОДЕРЖИМОЕ КЕЙСА (список предметов с шансами)
+     ============================================================ */
+  .odds-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 4px; border-bottom: 1px solid var(--stroke);
+  }
+  .odds-row:last-child { border-bottom: none; }
+  .odds-emoji { font-size: 26px; width: 32px; text-align: center; }
+  .odds-name { flex: 1; font-size: 13.5px; font-weight: 700; }
+  .odds-value { font-size: 12px; color: var(--lime); font-weight: 800; }
+  .odds-chance { font-size: 12px; color: var(--muted); font-weight: 700; min-width: 46px; text-align: right; }
+
+  /* ============================================================
+     АНИМАЦИЯ ОТКРЫТИЯ КЕЙСА - крутящаяся лента
+     ============================================================ */
+  .case-open-overlay {
+    position: fixed; inset: 0; z-index: 400;
+    background: rgba(0,0,0,0.85); display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity .2s ease;
+  }
+  .case-open-overlay.show { opacity: 1; pointer-events: auto; }
+
+  .reel-viewport {
+    position: relative; width: 100%; max-width: 420px; height: 120px;
+    overflow: hidden; border-radius: var(--radius);
+    background: var(--card); border: 1px solid var(--stroke);
+  }
+  .reel-marker {
+    position: absolute; top: 0; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 3px; background: var(--lime); z-index: 5;
+    box-shadow: 0 0 12px rgba(182,255,61,0.8);
+  }
+  .reel-track {
+    position: absolute; top: 0; left: 0; height: 100%;
+    display: flex; align-items: center;
+    transition: transform 4.5s cubic-bezier(.08,.82,.11,1);
+  }
+  .reel-item {
+    width: 92px; height: 92px; margin: 0 6px; flex-shrink: 0;
+    background: var(--card-2); border: 1px solid var(--stroke); border-radius: 14px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  }
+  .reel-item .re-emoji { font-size: 34px; }
+  .reel-item .re-value { font-size: 11px; color: var(--lime); font-weight: 800; }
+  .reel-item.re-common { border-color: var(--stroke); }
+  .reel-item.re-rare { border-color: rgba(35,213,224,0.5); }
+  .reel-item.re-epic { border-color: rgba(182,255,61,0.5); }
+  .reel-item.re-legendary { border-color: rgba(255,77,109,0.6); box-shadow: 0 0 16px rgba(255,77,109,0.25); }
+
+  .reel-result {
+    margin-top: 22px; font-size: 20px; font-weight: 900; text-align: center; min-height: 28px;
+  }
+  .reel-close-btn {
+    margin-top: 18px; border: none; background: var(--card); border: 1px solid var(--stroke);
+    color: var(--text); font-weight: 800; padding: 12px 26px; border-radius: var(--radius-sm);
+    opacity: 0; pointer-events: none; transition: opacity .2s ease;
+  }
+  .reel-close-btn.show { opacity: 1; pointer-events: auto; }
 </style>
 </head>
 <body>
@@ -379,13 +442,37 @@
     </div>
   </div>
 
+  <!-- Содержимое кейса (список предметов + шансы) -->
+  <div class="sheet-overlay" id="oddsOverlay">
+    <div class="sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-title" id="oddsTitle">Содержимое кейса</div>
+      <div id="oddsList"></div>
+    </div>
+  </div>
+
+  <!-- Анимация открытия кейса -->
+  <div class="case-open-overlay" id="caseOpenOverlay">
+    <div class="reel-viewport">
+      <div class="reel-marker"></div>
+      <div class="reel-track" id="reelTrack"></div>
+    </div>
+    <div class="reel-result" id="reelResult"></div>
+    <button class="reel-close-btn" id="reelCloseBtn">Закрыть</button>
+  </div>
+
   <div class="toast" id="toast"></div>
 
 <script>
-  
+  /* ============================================================
+     Пустая строка = запросы идут на тот же адрес, откуда открыт сайт.
+     Это работает, потому что backend теперь сам раздаёт эту страницу.
+     Меняй только если фронт и backend будут на РАЗНЫХ адресах.
+     ============================================================ */
   const API_URL = "";
 
-  
+  /* Эмодзи по редкости предмета — backend хранит только rarity (текст),
+     а не картинку/эмодзи, поэтому подбираем эмодзи сами по редкости. */
   const RARITY_EMOJI = {
     common: '🥥',
     rare: '🐸',
@@ -394,16 +481,18 @@
   };
   function emojiFor(rarity) { return RARITY_EMOJI[rarity] || '❔'; }
 
-  
+  /* ============================================================
+     СОСТОЯНИЕ
+     ============================================================ */
   const state = {
     balance: 0,
     tgId: null,
     upgrades: 0,
-    inventory: [],   
-    allItems: [],    
-    cases: [],       
-    haveInvId: null, 
-    wantItemId: null,
+    inventory: [],   // предметы игрока: {inventory_item_id, item_id, name, rarity, value}
+    allItems: [],    // все предметы игры: {id, name, rarity, value}
+    cases: [],       // список платных кейсов: {id, name, price}
+    haveInvId: null, // выбранный inventory_item_id (что ставим на апгрейд)
+    wantItemId: null,// выбранный item_id (что хотим получить)
     chance: 0,
     spinning: false,
     rotation: 0,
@@ -412,7 +501,7 @@
 
   const $ = (id) => document.getElementById(id);
 
-  
+  /* ---------- ЗАПРОСЫ К BACKEND ---------- */
   const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
 
   async function api(path, options = {}) {
@@ -426,7 +515,7 @@
     return data;
   }
 
-  
+  /* ---------- ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК (нижний бар) ---------- */
   document.querySelectorAll('.nav-btn').forEach((btn) => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.nav-btn').forEach((b) => b.classList.remove('active'));
@@ -436,7 +525,7 @@
     });
   });
 
- 
+  /* ---------- ЕЖЕДНЕВНЫЙ БЕСПЛАТНЫЙ КЕЙС ---------- */
   let dailyTimer = null;
 
   function updateDailyUI(data) {
@@ -492,7 +581,7 @@
     }
   });
 
-  
+  /* ---------- ПЛАТНЫЕ КЕЙСЫ ---------- */
   function renderCases() {
     if (!state.cases.length) {
       $('casesGrid').innerHTML = `<div class="pick-empty">Кейсов пока нет</div>`;
@@ -500,23 +589,20 @@
     }
     $('casesGrid').innerHTML = state.cases.map((c) => `
       <div class="case-card">
-        <div class="case-emoji">📦</div>
-        <div class="case-name">${c.name}</div>
-        <button class="case-open press" data-case="${c.id}">🪙 ${c.price}</button>
+        <div class="case-emoji" data-info="${c.id}" data-name="${c.name}">📦</div>
+        <div class="case-name" data-info="${c.id}" data-name="${c.name}">${c.name}</div>
+        <button class="case-open press" data-open="${c.id}">🪙 ${c.price}</button>
       </div>
     `).join('');
-    document.querySelectorAll('[data-case]').forEach((b) => {
-      b.addEventListener('click', async () => {
-        const caseId = b.dataset.case;
-        try {
-          const data = await api(`/api/cases/${caseId}/open`, { method: 'POST' });
-          showToast(`Выпало: ${data.item.name} (${data.item.rarity})!`);
-          await loadProfile();
-          await loadInventory();
-        } catch (e) {
-          showToast(e.message);
-        }
-      });
+
+    // тап по названию/иконке - показать содержимое кейса (шансы + цены)
+    document.querySelectorAll('[data-info]').forEach((el) => {
+      el.addEventListener('click', () => showCaseOdds(el.dataset.info, el.dataset.name));
+    });
+
+    // тап по кнопке с ценой - открыть кейс с анимацией
+    document.querySelectorAll('[data-open]').forEach((b) => {
+      b.addEventListener('click', () => openCaseWithAnimation(b.dataset.open));
     });
   }
 
@@ -530,7 +616,101 @@
     }
   }
 
-  
+  /* ---------- СОДЕРЖИМОЕ КЕЙСА (список + шансы) ---------- */
+  async function showCaseOdds(caseId, caseName) {
+    $('oddsTitle').textContent = caseName;
+    $('oddsList').innerHTML = `<div class="pick-empty">Загрузка...</div>`;
+    $('oddsOverlay').classList.add('show');
+    try {
+      const data = await api(`/api/cases/${caseId}/items`);
+      $('oddsList').innerHTML = data.items.map((it) => `
+        <div class="odds-row">
+          <div class="odds-emoji">${emojiFor(it.rarity)}</div>
+          <div class="odds-name">${it.name}</div>
+          <div class="odds-value">🪙 ${it.value}</div>
+          <div class="odds-chance">${it.chance}%</div>
+        </div>
+      `).join('');
+    } catch (e) {
+      $('oddsList').innerHTML = `<div class="pick-empty">Не удалось загрузить</div>`;
+    }
+  }
+  $('oddsOverlay').addEventListener('click', (e) => {
+    if (e.target === $('oddsOverlay')) $('oddsOverlay').classList.remove('show');
+  });
+
+  /* ---------- АНИМАЦИЯ ОТКРЫТИЯ КЕЙСА (крутящаяся лента) ---------- */
+  const REEL_ITEM_WIDTH = 104; // 92px карточка + 6px*2 отступа
+  const REEL_LENGTH = 40;      // сколько карточек всего крутится в ленте
+  const REEL_WIN_INDEX = 34;   // на какой по счёту карточке останавливаемся
+
+  async function openCaseWithAnimation(caseId) {
+    // сначала спрашиваем backend, что реально выпало (и списываем валюту)
+    let result;
+    try {
+      result = await api(`/api/cases/${caseId}/open`, { method: 'POST' });
+    } catch (e) {
+      showToast(e.message);
+      return;
+    }
+
+    // берём пул предметов этого кейса, чтобы визуально заполнить ленту
+    let pool = [];
+    try {
+      const data = await api(`/api/cases/${caseId}/items`);
+      pool = data.items;
+    } catch (e) {
+      pool = [{ name: result.item.name, rarity: result.item.rarity, value: 0 }];
+    }
+
+    // строим ленту: случайные предметы из пула, а на "выигрышном" месте - настоящий приз
+    const track = [];
+    for (let i = 0; i < REEL_LENGTH; i++) {
+      if (i === REEL_WIN_INDEX) {
+        track.push(result.item);
+      } else {
+        track.push(pool[Math.floor(Math.random() * pool.length)]);
+      }
+    }
+
+    $('reelTrack').innerHTML = track.map((it) => `
+      <div class="reel-item re-${it.rarity}">
+        <div class="re-emoji">${emojiFor(it.rarity)}</div>
+        <div class="re-value">🪙 ${it.value || ''}</div>
+      </div>
+    `).join('');
+
+    // сбрасываем позицию ленты мгновенно (без анимации) перед стартом
+    const trackEl = $('reelTrack');
+    trackEl.style.transition = 'none';
+    trackEl.style.transform = 'translateX(0px)';
+    $('reelResult').textContent = '';
+    $('reelCloseBtn').classList.remove('show');
+    $('caseOpenOverlay').classList.add('show');
+
+    // ждём кадр, чтобы браузер применил сброс, потом запускаем анимацию к нужной карточке
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const viewportWidth = trackEl.parentElement.clientWidth;
+        const targetOffset = REEL_WIN_INDEX * REEL_ITEM_WIDTH + REEL_ITEM_WIDTH / 2 - viewportWidth / 2;
+        trackEl.style.transition = '';
+        trackEl.style.transform = `translateX(-${targetOffset}px)`;
+      });
+    });
+
+    setTimeout(() => {
+      $('reelResult').textContent = `🎉 ${result.item.name} (${result.item.rarity})`;
+      $('reelCloseBtn').classList.add('show');
+    }, 4600);
+  }
+
+  $('reelCloseBtn').addEventListener('click', async () => {
+    $('caseOpenOverlay').classList.remove('show');
+    await loadProfile();
+    await loadInventory();
+  });
+
+  /* ---------- КОЛЕСО ---------- */
   const wheelEl = $('wheel');
   const rotorEl = $('rotor');
 
@@ -544,7 +724,8 @@
   function getHave() { return state.inventory.find((i) => i.inventory_item_id == state.haveInvId) || null; }
   function getWant() { return state.allItems.find((i) => i.id == state.wantItemId) || null; }
 
-  
+  /* Локальный превью-расчёт шанса (та же формула, что и на backend, для отображения ДО нажатия кнопки).
+     Итоговый результат апгрейда всегда решает backend, а не эта формула. */
   function computeChance(have, want) {
     if (!have || !want || want.value <= 0) return 0;
     let chance = (have.value / want.value) * 0.9 * 100;
@@ -581,7 +762,7 @@
     renderWheel();
   }
 
-  
+  /* ---------- BOTTOM-SHEET ВЫБОРА ПРЕДМЕТА ---------- */
   let pickMode = null; // 'have' | 'want'
 
   function openPicker(mode) {
@@ -622,7 +803,7 @@
   $('slotWant').addEventListener('click', () => openPicker('want'));
   $('sheetOverlay').addEventListener('click', (e) => { if (e.target === $('sheetOverlay')) closePicker(); });
 
-  
+  /* ---------- КРУТИМ: сначала спрашиваем backend, потом просто АНИМИРУЕМ его ответ ---------- */
   async function spin() {
     if (state.spinning) return;
     const have = getHave();
@@ -647,7 +828,7 @@
       return;
     }
 
-    
+    // backend уже всё решил (result.success) - анимация просто ПОКАЗЫВАЕТ настоящий исход
     const chanceDeg = state.chance / 100 * 360;
     const win = result.success;
     const target = win
@@ -681,7 +862,7 @@
   }
   $('upgradeBtn').addEventListener('click', spin);
 
-  
+  /* ---------- ПРОМОКОД (пока не подключён к backend) ---------- */
   $('promoBtn').addEventListener('click', () => {
     const code = $('promoInput').value.trim();
     const msg = $('promoMsg');
@@ -691,7 +872,7 @@
     $('promoInput').value = '';
   });
 
-  
+  /* ---------- ТОСТ / ПОПОЛНЕНИЕ ---------- */
   function showToast(text) {
     const t = $('toast');
     t.textContent = text; t.classList.add('show');
@@ -702,7 +883,7 @@
     showToast('Пополнение баланса скоро будет доступно');
   });
 
-  
+  /* ---------- ЗАГРУЗКА ДАННЫХ С BACKEND ---------- */
   async function loadProfile() {
     try {
       const data = await api('/api/profile');
