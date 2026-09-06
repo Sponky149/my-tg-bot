@@ -103,6 +103,32 @@ def profile_drops(user: User = Depends(get_current_user), db: Session = Depends(
     return {"best": best, "recent": recent}
 
 
+@app.get("/api/drops/global")
+def global_drops(db: Session = Depends(get_db)):
+    """Лента последних дропов ВСЕХ игроков - для тикера на главном экране.
+    Показывает только публичный юзернейм (или ID если юзернейма нет), без другой личной информации."""
+    from database import DropLog
+
+    rows = (
+        db.query(DropLog, User)
+        .join(User, DropLog.user_id == User.id)
+        .order_by(DropLog.created_at.desc())
+        .limit(20)
+        .all()
+    )
+
+    result = []
+    for drop, u in rows:
+        display_name = u.username or f"id{u.telegram_id}"
+        result.append({
+            "name": drop.item_name,
+            "rarity": drop.item_rarity,
+            "value": drop.item_value,
+            "player": display_name,
+        })
+    return {"drops": result}
+
+
 @app.get("/api/inventory")
 def get_inventory(user: User = Depends(get_current_user)):
     items = []
@@ -144,11 +170,16 @@ def daily_open(user: User = Depends(get_current_user), db: Session = Depends(get
 
 @app.get("/api/cases")
 def list_cases(db: Session = Depends(get_db)):
-    from database import Case
+    from database import Case, CaseItem
     cases = db.query(Case).all()
-    return {"cases": [
-        {"id": c.id, "name": c.name, "price": c.price, "image_url": c.image_url} for c in cases
-    ]}
+    result = []
+    for c in cases:
+        item_count = db.query(CaseItem).filter(CaseItem.case_id == c.id).count()
+        result.append({
+            "id": c.id, "name": c.name, "price": c.price,
+            "image_url": c.image_url, "item_count": item_count,
+        })
+    return {"cases": result}
 
 
 @app.get("/api/cases/{case_id}/items")
@@ -175,12 +206,19 @@ def case_items_endpoint(case_id: int, db: Session = Depends(get_db)):
 @app.post("/api/cases/{case_id}/open")
 def open_case_endpoint(
     case_id: int,
+    quantity: int = 1,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     try:
-        item = open_case(db, user, case_id)
-        return {"success": True, "item": {"name": item.name, "rarity": item.rarity, "value": item.value, "image_url": item.image_url}}
+        items = open_case(db, user, case_id, quantity)
+        return {
+            "success": True,
+            "items": [
+                {"name": i.name, "rarity": i.rarity, "value": i.value, "image_url": i.image_url}
+                for i in items
+            ],
+        }
     except ValueError as e:
         raise HTTPException(400, str(e))
 
