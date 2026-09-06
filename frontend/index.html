@@ -167,21 +167,96 @@
 
   .cases-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .case-card {
-    background: var(--card); border: 1px solid var(--stroke);
-    border-radius: var(--radius); padding: 18px 14px; text-align: center;
-    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    position: relative; overflow: hidden;
+    background: linear-gradient(160deg, var(--card), var(--card-2));
+    border: 1px solid var(--stroke);
+    border-radius: var(--radius); padding: 16px 14px 14px; text-align: center;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    opacity: 0; transform: translateY(14px) scale(0.96);
+    animation: caseCardIn 0.45s ease forwards;
+  }
+  @keyframes caseCardIn { to { opacity: 1; transform: translateY(0) scale(1); } }
+  .cases-grid .case-card:nth-child(1) { animation-delay: 0.02s; }
+  .cases-grid .case-card:nth-child(2) { animation-delay: 0.08s; }
+  .cases-grid .case-card:nth-child(3) { animation-delay: 0.14s; }
+  .cases-grid .case-card:nth-child(4) { animation-delay: 0.2s; }
+  .cases-grid .case-card:nth-child(5) { animation-delay: 0.26s; }
+  .cases-grid .case-card:nth-child(6) { animation-delay: 0.32s; }
+  .cases-grid .case-card:nth-child(7) { animation-delay: 0.38s; }
+  .cases-grid .case-card:nth-child(n+8) { animation-delay: 0.44s; }
+  .case-card::before {
+    content: ''; position: absolute; top: 0; left: -60%; width: 40%; height: 100%;
+    background: linear-gradient(100deg, transparent, rgba(255,255,255,0.08), transparent);
+    transform: skewX(-20deg); animation: caseShimmer 3.2s ease-in-out infinite;
+  }
+  @keyframes caseShimmer { 0% { left: -60%; } 50% { left: 130%; } 100% { left: 130%; } }
+  .case-card {
+    transition: transform 0.3s cubic-bezier(.2,.7,.2,1), border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .case-card:active { transform: scale(0.97); }
+  @media (hover: hover) {
+    .case-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(185,91,255,0.5);
+      box-shadow: 0 10px 26px rgba(124,58,237,0.25);
+    }
   }
   .case-emoji {
-    font-size: 46px; line-height: 1;
-    filter: drop-shadow(0 6px 14px rgba(124,58,237,0.25));
+    font-size: 46px; line-height: 1; position: relative; z-index: 1;
+    filter: drop-shadow(0 6px 14px rgba(124,58,237,0.35));
+    transition: transform 0.25s ease;
   }
-  .case-name { font-size: 15px; font-weight: 800; }
+  .case-card:hover .case-emoji { transform: translateY(-3px) scale(1.05); }
+  .case-name { font-size: 14.5px; font-weight: 900; position: relative; z-index: 1; }
+  .case-count { font-size: 11px; color: var(--muted); font-weight: 700; position: relative; z-index: 1; }
   .case-open {
     margin-top: 4px; width: 100%; border: none; border-radius: var(--radius-sm);
     background: linear-gradient(145deg, var(--lime), var(--emerald));
-    color: #04160e; font-weight: 900; font-size: 14px; padding: 11px 0;
+    color: #fff; font-weight: 900; font-size: 14px; padding: 11px 0;
     display: flex; align-items: center; justify-content: center; gap: 6px;
+    position: relative; z-index: 1;
   }
+
+  /* ============================================================
+     ТИКЕР ПОСЛЕДНИХ ДРОПОВ (все игроки, горизонтальная лента)
+     ============================================================ */
+  .drops-ticker-wrap { margin: 6px 0 18px; }
+  .drops-ticker-label {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 800; color: var(--muted);
+    letter-spacing: 1px; margin: 0 4px 8px;
+  }
+  .live-dot {
+    width: 7px; height: 7px; border-radius: 50%; background: #3ddc6e;
+    box-shadow: 0 0 8px #3ddc6e; animation: livePulse 1.4s ease-in-out infinite;
+  }
+  @keyframes livePulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+  .drops-ticker {
+    display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  .drops-ticker::-webkit-scrollbar { display: none; }
+  .drop-chip {
+    flex-shrink: 0; width: 92px; background: var(--card); border: 1px solid var(--stroke);
+    border-radius: 14px; padding: 10px 8px; text-align: center;
+    opacity: 0; transform: scale(0.9); animation: dropChipIn 0.35s ease forwards;
+  }
+  @keyframes dropChipIn { to { opacity: 1; transform: scale(1); } }
+  .drop-chip.rarity-legendary { border-color: rgba(255,77,109,0.6); box-shadow: 0 0 14px rgba(255,77,109,0.2); }
+  .drop-chip.rarity-epic { border-color: rgba(185,91,255,0.5); }
+  .drop-chip-value { font-size: 11.5px; font-weight: 900; color: var(--lime); margin-top: 4px; }
+  .drop-chip-player { font-size: 9.5px; color: var(--muted); font-weight: 700; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* ============================================================
+     КОШЕЛЁК
+     ============================================================ */
+  .wallet-balance-card { text-align: center; padding: 28px 18px; }
+  .wallet-balance-num {
+    font-size: 40px; font-weight: 900; margin-top: 8px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .wallet-tips { margin-top: 10px; padding-left: 4px; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .wallet-tips li { font-size: 13.5px; color: var(--muted); font-weight: 600; }
 
   .id-card { display: flex; align-items: center; gap: 14px; }
   .id-avatar {
@@ -294,6 +369,98 @@
   .odds-name { flex: 1; font-size: 13.5px; font-weight: 700; }
   .odds-value { font-size: 12px; color: var(--lime); font-weight: 800; }
   .odds-chance { font-size: 12px; color: var(--muted); font-weight: 700; min-width: 46px; text-align: right; }
+
+  /* ============================================================
+     ДЕТАЛЬНАЯ СТРАНИЦА КЕЙСА (тап по кейсу в сетке)
+     ============================================================ */
+  .case-detail-overlay {
+    position: fixed; inset: 0; z-index: 350;
+    background: rgba(4,2,10,0.92);
+    opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
+    display: flex; align-items: flex-end; justify-content: center;
+  }
+  .case-detail-overlay.show { opacity: 1; pointer-events: auto; }
+  .case-detail-sheet {
+    width: 100%; max-width: 480px; max-height: 92vh; overflow-y: auto;
+    background: linear-gradient(180deg, var(--bg-2), var(--bg) 55%);
+    border-radius: 24px 24px 0 0; padding: 18px 18px calc(24px + env(safe-area-inset-bottom, 0px));
+    transform: translateY(24px); transition: transform 0.3s cubic-bezier(.2,.8,.2,1);
+    position: relative;
+  }
+  .case-detail-overlay.show .case-detail-sheet { transform: translateY(0); }
+
+  .detail-close-btn {
+    position: absolute; top: 14px; right: 14px; z-index: 2;
+    width: 34px; height: 34px; border-radius: 50%; border: none;
+    background: var(--card); color: var(--text); font-size: 15px; font-weight: 800;
+  }
+
+  .detail-chest-wrap {
+    position: relative; height: 150px; display: flex; align-items: center; justify-content: center;
+    margin-top: 6px;
+  }
+  .detail-chest-glow {
+    position: absolute; width: 130px; height: 130px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(61,220,110,0.35), transparent 70%);
+    animation: chestGlowPulse 2.6s ease-in-out infinite;
+  }
+  @keyframes chestGlowPulse { 0%,100% { transform: scale(0.9); opacity: 0.7; } 50% { transform: scale(1.08); opacity: 1; } }
+  .detail-chest-emoji {
+    position: relative; z-index: 1; font-size: 84px; line-height: 1;
+    animation: chestFloat 3s ease-in-out infinite;
+  }
+  @keyframes chestFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+  .detail-chest-emoji img { width: 130px; height: 130px; object-fit: contain; }
+
+  .detail-title { text-align: center; font-size: 21px; font-weight: 900; margin-top: 8px; letter-spacing: 0.5px; }
+
+  .detail-stats { display: flex; gap: 12px; margin-top: 16px; }
+  .detail-stat-box { flex: 1; text-align: center; padding: 14px 8px; }
+  .detail-stat-value { font-size: 20px; font-weight: 900; margin-top: 4px; }
+
+  .qty-row, .speed-row {
+    display: flex; gap: 8px; margin-top: 14px; background: var(--field);
+    border: 1px solid var(--stroke); border-radius: 14px; padding: 5px;
+  }
+  .qty-btn, .speed-btn {
+    flex: 1; border: none; background: transparent; color: var(--muted);
+    font-weight: 800; font-size: 14px; padding: 10px 0; border-radius: 10px;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+  }
+  .qty-btn.active, .speed-btn.active {
+    background: linear-gradient(135deg, var(--lime), var(--emerald));
+    color: #fff;
+  }
+  .qty-btn:active, .speed-btn:active { transform: scale(0.95); }
+
+  .detail-open-btn {
+    width: 100%; margin-top: 16px; border: none; border-radius: var(--radius);
+    background: linear-gradient(135deg, var(--lime), var(--emerald));
+    color: #fff; font-weight: 900; font-size: 16px; padding: 16px;
+    box-shadow: 0 8px 24px rgba(124,58,237,0.35);
+  }
+  .detail-open-btn:disabled {
+    background: var(--card-2); color: var(--muted); box-shadow: none; opacity: 0.7;
+  }
+
+  .detail-items-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .detail-item-card {
+    background: var(--card); border: 1px solid var(--stroke); border-radius: 16px;
+    padding: 14px 10px; text-align: center;
+    opacity: 0; transform: translateY(10px); animation: caseCardIn 0.4s ease forwards;
+  }
+  .detail-item-card:nth-child(1) { animation-delay: 0.02s; }
+  .detail-item-card:nth-child(2) { animation-delay: 0.06s; }
+  .detail-item-card:nth-child(3) { animation-delay: 0.10s; }
+  .detail-item-card:nth-child(4) { animation-delay: 0.14s; }
+  .detail-item-card:nth-child(5) { animation-delay: 0.18s; }
+  .detail-item-card:nth-child(6) { animation-delay: 0.22s; }
+  .detail-item-card:nth-child(n+7) { animation-delay: 0.26s; }
+  .detail-item-card.rarity-legendary { border-color: rgba(255,77,109,0.5); }
+  .detail-item-card.rarity-epic { border-color: rgba(185,91,255,0.45); }
+  .detail-item-emoji { font-size: 40px; }
+  .detail-item-name { font-size: 12.5px; font-weight: 800; margin-top: 6px; }
+  .detail-item-price { font-size: 12px; color: var(--lime); font-weight: 800; margin-top: 3px; }
 
   /* ============================================================
      ИНВЕНТАРЬ (профиль) - строка предмета с кнопкой продажи
@@ -411,7 +578,12 @@
     </div>
   </header>
 
-  <main class="screen" id="screen-cases">
+  <main class="screen active" id="screen-cases">
+    <div class="drops-ticker-wrap">
+      <div class="drops-ticker-label"><span class="live-dot"></span>ПОСЛЕДНИЕ ДРОПЫ</div>
+      <div class="drops-ticker" id="dropsTicker"></div>
+    </div>
+
     <div class="section-title">Ежедневный кейс</div>
     <div class="card" style="text-align:center; padding: 24px 18px;">
       <div style="font-size:48px; line-height:1;">🎁</div>
@@ -421,10 +593,11 @@
     </div>
 
     <div class="section-title">Кейсы</div>
+    <div class="label" style="margin: -8px 4px 12px;">Открывай кейсы и собирай брейнротов</div>
     <div class="cases-grid" id="casesGrid"></div>
   </main>
 
-  <main class="screen active" id="screen-upgrader">
+  <main class="screen" id="screen-upgrader">
     <div class="wheel-wrap">
       <div class="wheel-stage">
         <div class="wheel" id="wheel"></div>
@@ -457,6 +630,33 @@
     <button class="upgrade-btn press" id="upgradeBtn" disabled>⚡ КРУТИТЬ</button>
   </main>
 
+  <main class="screen" id="screen-inventory">
+    <div class="section-title">Инвентарь</div>
+    <div class="card" id="inventoryCard">
+      <div class="pick-empty">Пока пусто</div>
+    </div>
+  </main>
+
+  <main class="screen" id="screen-wallet">
+    <div class="section-title">Кошелёк</div>
+    <div class="card wallet-balance-card">
+      <div class="label">Твой баланс</div>
+      <div class="wallet-balance-num"><span class="coin">🪙</span><span id="walletBalanceValue">0</span></div>
+    </div>
+    <div class="card">
+      <div class="label">Как заработать ещё</div>
+      <ul class="wallet-tips">
+        <li>🎁 Открывай бесплатный кейс раз в 24 часа</li>
+        <li>💰 Продавай ненужные брейнроты в инвентаре</li>
+        <li>⚡ Апгрейдь дешёвые предметы в дорогие</li>
+      </ul>
+    </div>
+    <div class="section-title">История начислений</div>
+    <div class="card" id="walletHistoryCard">
+      <div class="pick-empty">Пока пусто</div>
+    </div>
+  </main>
+
   <main class="screen" id="screen-profile">
     <div class="card id-card">
       <div class="id-avatar" id="idAvatar">U</div>
@@ -487,16 +687,6 @@
 
     <a href="https://t.me/" target="_blank" class="support-btn press">💬 Поддержка</a>
 
-    <div class="section-title">🕐 Последние дропы</div>
-    <div class="card" id="recentDropsCard">
-      <div class="pick-empty">Пока нет дропов</div>
-    </div>
-
-    <div class="section-title">Инвентарь</div>
-    <div class="card" id="inventoryCard">
-      <div class="pick-empty">Пока пусто</div>
-    </div>
-
     <div class="card">
       <div class="label">Промокод</div>
       <div class="promo-row">
@@ -508,8 +698,10 @@
   </main>
 
   <nav class="bottom-nav">
-    <button class="nav-btn" data-tab="cases"><span class="nav-ic">🎁</span>Кейсы</button>
-    <button class="nav-btn active" data-tab="upgrader"><span class="nav-ic">⚡</span>Апгрейдер</button>
+    <button class="nav-btn active" data-tab="cases"><span class="nav-ic">🏠</span>Главная</button>
+    <button class="nav-btn" data-tab="upgrader"><span class="nav-ic">⚡</span>Апгрейдер</button>
+    <button class="nav-btn" data-tab="inventory"><span class="nav-ic">🎒</span>Инвентарь</button>
+    <button class="nav-btn" data-tab="wallet"><span class="nav-ic">💳</span>Кошелёк</button>
     <button class="nav-btn" data-tab="profile"><span class="nav-ic">👤</span>Профиль</button>
   </nav>
 
@@ -521,12 +713,43 @@
     </div>
   </div>
 
-  <!-- Содержимое кейса (список предметов + шансы) -->
-  <div class="sheet-overlay" id="oddsOverlay">
-    <div class="sheet">
-      <div class="sheet-handle"></div>
-      <div class="sheet-title" id="oddsTitle">Содержимое кейса</div>
-      <div id="oddsList"></div>
+  <!-- Детальная страница кейса (тап по кейсу в сетке) -->
+  <div class="case-detail-overlay" id="caseDetailOverlay">
+    <div class="case-detail-sheet">
+      <button class="detail-close-btn press" id="caseDetailCloseBtn">✕</button>
+
+      <div class="detail-chest-wrap">
+        <div class="detail-chest-glow"></div>
+        <div class="detail-chest-emoji" id="detailChestEmoji">📦</div>
+      </div>
+      <div class="detail-title" id="detailTitle">—</div>
+
+      <div class="detail-stats">
+        <div class="card detail-stat-box">
+          <div class="label">ЦЕНА</div>
+          <div class="detail-stat-value" id="detailPrice">🪙 0</div>
+        </div>
+        <div class="card detail-stat-box">
+          <div class="label">ПРЕДМЕТОВ</div>
+          <div class="detail-stat-value" id="detailCount">0</div>
+        </div>
+      </div>
+
+      <div class="qty-row" id="qtyRow">
+        <button class="qty-btn active" data-qty="1">1</button>
+        <button class="qty-btn" data-qty="2">2</button>
+        <button class="qty-btn" data-qty="3">3</button>
+      </div>
+
+      <div class="speed-row" id="speedRow">
+        <button class="speed-btn active" data-speed="slow">🐢 Медленно</button>
+        <button class="speed-btn" data-speed="fast">⚡ Быстро</button>
+      </div>
+
+      <button class="detail-open-btn press" id="detailOpenBtn">Открыть</button>
+
+      <div class="section-title">Что может выпасть</div>
+      <div class="detail-items-grid" id="detailItemsGrid"></div>
     </div>
   </div>
 
@@ -661,10 +884,12 @@
     try {
       const data = await api('/api/daily/open', { method: 'POST' });
       showToast(`Выпало: ${data.item.name} (${data.item.rarity})!`);
+      playSound('win');
       await loadProfile();
       await loadInventory();
       await loadDailyStatus();
       await loadDrops();
+      await loadGlobalDropsTicker();
     } catch (e) {
       showToast(e.message);
     }
@@ -677,21 +902,17 @@
       return;
     }
     $('casesGrid').innerHTML = state.cases.map((c) => `
-      <div class="case-card">
-        <div class="case-emoji" data-info="${c.id}" data-name="${c.name}">${c.image_url ? `<img src="${c.image_url}" class="media-case" alt="" />` : '📦'}</div>
-        <div class="case-name" data-info="${c.id}" data-name="${c.name}">${c.name}</div>
-        <button class="case-open press" data-open="${c.id}">🪙 ${c.price}</button>
+      <div class="case-card press" data-open-detail="${c.id}">
+        <div class="case-emoji">${c.image_url ? `<img src="${c.image_url}" class="media-case" alt="" />` : '📦'}</div>
+        <div class="case-name">${c.name}</div>
+        <div class="case-count">${c.item_count} предм.</div>
+        <div class="case-open">🪙 ${c.price}</div>
       </div>
     `).join('');
 
-    // тап по названию/иконке - показать содержимое кейса (шансы + цены)
-    document.querySelectorAll('[data-info]').forEach((el) => {
-      el.addEventListener('click', () => showCaseOdds(el.dataset.info, el.dataset.name));
-    });
-
-    // тап по кнопке с ценой - открыть кейс с анимацией
-    document.querySelectorAll('[data-open]').forEach((b) => {
-      b.addEventListener('click', () => openCaseWithAnimation(b.dataset.open));
+    // тап по всей карточке кейса - открыть детальную страницу
+    document.querySelectorAll('[data-open-detail]').forEach((el) => {
+      el.addEventListener('click', () => openCaseDetail(el.dataset.openDetail));
     });
   }
 
@@ -705,42 +926,112 @@
     }
   }
 
-  /* ---------- СОДЕРЖИМОЕ КЕЙСА (список + шансы) ---------- */
-  async function showCaseOdds(caseId, caseName) {
-    $('oddsTitle').textContent = caseName;
-    $('oddsList').innerHTML = `<div class="pick-empty">Загрузка...</div>`;
-    $('oddsOverlay').classList.add('show');
+  /* ---------- ДЕТАЛЬНАЯ СТРАНИЦА КЕЙСА ---------- */
+  const detailState = { caseId: null, qty: 1, speed: 'slow' };
+
+  async function openCaseDetail(caseId) {
+    const c = state.cases.find((x) => String(x.id) === String(caseId));
+    if (!c) return;
+
+    detailState.caseId = caseId;
+    detailState.qty = 1;
+    detailState.speed = 'slow';
+
+    $('detailTitle').textContent = c.name;
+    $('detailPrice').innerHTML = `🪙 ${c.price}`;
+    $('detailCount').textContent = c.item_count;
+    $('detailChestEmoji').innerHTML = c.image_url ? `<img src="${c.image_url}" alt="" />` : '📦';
+
+    document.querySelectorAll('#qtyRow .qty-btn').forEach((b) => b.classList.toggle('active', b.dataset.qty === '1'));
+    document.querySelectorAll('#speedRow .speed-btn').forEach((b) => b.classList.toggle('active', b.dataset.speed === 'slow'));
+
+    updateDetailOpenBtn(c);
+
+    $('detailItemsGrid').innerHTML = `<div class="pick-empty">Загрузка...</div>`;
+    $('caseDetailOverlay').classList.add('show');
+
     try {
       const data = await api(`/api/cases/${caseId}/items`);
-      $('oddsList').innerHTML = data.items.map((it) => `
-        <div class="odds-row">
-          <div class="odds-emoji">${mediaFor(it, "media-odds")}</div>
-          <div class="odds-name">${it.name}</div>
-          <div class="odds-value">🪙 ${it.value}</div>
+      $('detailItemsGrid').innerHTML = data.items.map((it) => `
+        <div class="detail-item-card rarity-${it.rarity}">
+          <div class="detail-item-emoji">${mediaFor(it, 'media-odds')}</div>
+          <div class="detail-item-name">${it.name}</div>
+          <div class="detail-item-price">🪙 ${it.value}</div>
         </div>
       `).join('');
     } catch (e) {
-      $('oddsList').innerHTML = `<div class="pick-empty">Не удалось загрузить</div>`;
+      $('detailItemsGrid').innerHTML = `<div class="pick-empty">Не удалось загрузить</div>`;
     }
   }
-  $('oddsOverlay').addEventListener('click', (e) => {
-    if (e.target === $('oddsOverlay')) $('oddsOverlay').classList.remove('show');
+
+  function updateDetailOpenBtn(c) {
+    const total = c.price * detailState.qty;
+    const btn = $('detailOpenBtn');
+    if (state.balance < total) {
+      btn.textContent = 'Недостаточно монет';
+      btn.disabled = true;
+    } else {
+      btn.textContent = `Открыть за 🪙 ${total}`;
+      btn.disabled = false;
+    }
+  }
+
+  $('caseDetailCloseBtn').addEventListener('click', () => {
+    $('caseDetailOverlay').classList.remove('show');
   });
+  $('caseDetailOverlay').addEventListener('click', (e) => {
+    if (e.target === $('caseDetailOverlay')) $('caseDetailOverlay').classList.remove('show');
+  });
+
+  document.querySelectorAll('#qtyRow .qty-btn').forEach((b) => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('#qtyRow .qty-btn').forEach((x) => x.classList.remove('active'));
+      b.classList.add('active');
+      detailState.qty = parseInt(b.dataset.qty, 10);
+      const c = state.cases.find((x) => String(x.id) === String(detailState.caseId));
+      if (c) updateDetailOpenBtn(c);
+    });
+  });
+
+  document.querySelectorAll('#speedRow .speed-btn').forEach((b) => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('#speedRow .speed-btn').forEach((x) => x.classList.remove('active'));
+      b.classList.add('active');
+      detailState.speed = b.dataset.speed;
+    });
+  });
+
+  $('detailOpenBtn').addEventListener('click', () => {
+    $('caseDetailOverlay').classList.remove('show');
+    openCaseWithAnimation(detailState.caseId, detailState.qty, detailState.speed);
+  });
+
+  /* ---------- СОДЕРЖИМОЕ КЕЙСА (список + шансы) ---------- */
 
   /* ---------- АНИМАЦИЯ ОТКРЫТИЯ КЕЙСА (крутящаяся лента) ---------- */
   const REEL_ITEM_WIDTH = 104; // 92px карточка + 6px*2 отступа
   const REEL_LENGTH = 40;      // сколько карточек всего крутится в ленте
   const REEL_WIN_INDEX = 34;   // на какой по счёту карточке останавливаемся
 
-  async function openCaseWithAnimation(caseId) {
+  async function openCaseWithAnimation(caseId, quantity = 1, speed = 'slow') {
     // сначала спрашиваем backend, что реально выпало (и списываем валюту)
     let result;
     try {
-      result = await api(`/api/cases/${caseId}/open`, { method: 'POST' });
+      result = await api(`/api/cases/${caseId}/open?quantity=${quantity}`, { method: 'POST' });
     } catch (e) {
       showToast(e.message);
       return;
     }
+
+    const wonItems = result.items;
+
+    // при покупке нескольких сразу - лента ни к чему, просто показываем все призы карточками
+    if (quantity > 1) {
+      showMultiResult(wonItems);
+      return;
+    }
+
+    const wonItem = wonItems[0];
 
     // берём пул предметов этого кейса, чтобы визуально заполнить ленту
     let pool = [];
@@ -748,17 +1039,12 @@
       const data = await api(`/api/cases/${caseId}/items`);
       pool = data.items;
     } catch (e) {
-      pool = [{ name: result.item.name, rarity: result.item.rarity, value: 0 }];
+      pool = [{ name: wonItem.name, rarity: wonItem.rarity, value: 0 }];
     }
 
-    // строим ленту: случайные предметы из пула, а на "выигрышном" месте - настоящий приз
     const track = [];
     for (let i = 0; i < REEL_LENGTH; i++) {
-      if (i === REEL_WIN_INDEX) {
-        track.push(result.item);
-      } else {
-        track.push(pool[Math.floor(Math.random() * pool.length)]);
-      }
+      track.push(i === REEL_WIN_INDEX ? wonItem : pool[Math.floor(Math.random() * pool.length)]);
     }
 
     $('reelTrack').innerHTML = track.map((it) => `
@@ -768,35 +1054,55 @@
       </div>
     `).join('');
 
-    // сбрасываем позицию ленты мгновенно (без анимации) перед стартом
     const trackEl = $('reelTrack');
+    const spinDuration = speed === 'fast' ? 1.6 : 4.5;
     trackEl.style.transition = 'none';
     trackEl.style.transform = 'translateX(0px)';
     $('reelResult').textContent = '';
     $('reelCloseBtn').classList.remove('show');
     $('caseOpenOverlay').classList.add('show');
+    playSound('spin');
 
-    // ждём кадр, чтобы браузер применил сброс, потом запускаем анимацию к нужной карточке
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         const viewportWidth = trackEl.parentElement.clientWidth;
         const targetOffset = REEL_WIN_INDEX * REEL_ITEM_WIDTH + REEL_ITEM_WIDTH / 2 - viewportWidth / 2;
-        trackEl.style.transition = '';
+        trackEl.style.transition = `transform ${spinDuration}s cubic-bezier(.08,.82,.11,1)`;
         trackEl.style.transform = `translateX(-${targetOffset}px)`;
       });
     });
 
     setTimeout(() => {
-      $('reelResult').textContent = `🎉 ${result.item.name} (${result.item.rarity})`;
+      $('reelResult').textContent = `🎉 ${wonItem.name} (${wonItem.rarity})`;
       $('reelCloseBtn').classList.add('show');
-    }, 4600);
+      playSound(wonItem.rarity === 'legendary' || wonItem.rarity === 'epic' ? 'bigwin' : 'win');
+    }, spinDuration * 1000 + 100);
+  }
+
+  function showMultiResult(items) {
+    $('reelTrack').parentElement.style.display = 'none';
+    $('reelResult').innerHTML = `
+      <div class="detail-items-grid" style="margin-top:10px;">
+        ${items.map((it) => `
+          <div class="detail-item-card rarity-${it.rarity}">
+            <div class="detail-item-emoji">${mediaFor(it, 'media-odds')}</div>
+            <div class="detail-item-name">${it.name}</div>
+            <div class="detail-item-price">🪙 ${it.value}</div>
+          </div>
+        `).join('')}
+      </div>`;
+    $('reelCloseBtn').classList.add('show');
+    $('caseOpenOverlay').classList.add('show');
+    playSound('win');
   }
 
   $('reelCloseBtn').addEventListener('click', async () => {
     $('caseOpenOverlay').classList.remove('show');
+    $('reelTrack').parentElement.style.display = '';
     await loadProfile();
     await loadInventory();
     await loadDrops();
+    await loadGlobalDropsTicker();
   });
 
   /* ---------- КОЛЕСО ---------- */
@@ -935,9 +1241,11 @@
       if (win) {
         res.textContent = '🎉 ВЫИГРЫШ! ' + emojiFor(want.rarity) + ' ' + result.won_item;
         res.className = 'wheel-result win';
+        playSound('win');
       } else {
         res.textContent = '💀 ПРОИГРЫШ — потерян ' + result.lost_item;
         res.className = 'wheel-result lose';
+        playSound('lose');
       }
       state.upgrades += 1;
       $('statUpgrades').textContent = state.upgrades;
@@ -961,6 +1269,49 @@
     $('promoInput').value = '';
   });
 
+  /* ---------- ТИХИЕ ЗВУКИ (генерируются на лету, без аудиофайлов) ---------- */
+  let audioCtx = null;
+  function getAudioCtx() {
+    if (!audioCtx) {
+      try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; }
+    }
+    return audioCtx;
+  }
+
+  function playTone(freq, duration, delay, volume) {
+    const ctx = getAudioCtx();
+    if (!ctx) return;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    const start = ctx.currentTime + delay;
+    gain.gain.setValueAtTime(0, start);
+    gain.gain.linearRampToValueAtTime(volume, start + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, start + duration);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(start);
+    osc.stop(start + duration + 0.05);
+  }
+
+  function playSound(type) {
+    // громкость специально невысокая и тона мягкие - чтобы не раздражало
+    if (type === 'click') {
+      playTone(520, 0.06, 0, 0.05);
+    } else if (type === 'spin') {
+      playTone(300, 0.12, 0, 0.04);
+    } else if (type === 'win') {
+      playTone(660, 0.14, 0, 0.06);
+      playTone(880, 0.18, 0.1, 0.05);
+    } else if (type === 'bigwin') {
+      playTone(660, 0.14, 0, 0.07);
+      playTone(880, 0.14, 0.1, 0.07);
+      playTone(1100, 0.22, 0.2, 0.06);
+    } else if (type === 'lose') {
+      playTone(220, 0.22, 0, 0.05);
+    }
+  }
+
   /* ---------- ТОСТ / ПОПОЛНЕНИЕ ---------- */
   function showToast(text) {
     const t = $('toast');
@@ -978,6 +1329,7 @@
       const data = await api('/api/profile');
       state.balance = data.balance;
       $('balanceValue').textContent = Math.round(state.balance);
+      $('walletBalanceValue').textContent = Math.round(state.balance);
       $('profileId').textContent = state.tgId != null ? state.tgId : 'Не определён';
       $('profileName').textContent = state._name ? '@' + (state.tgUsername || state._name) : 'Игрок';
       $('statCases').textContent = data.cases_opened;
@@ -1005,7 +1357,7 @@
       }
 
       if (data.recent.length) {
-        $('recentDropsCard').innerHTML = data.recent.map((d) => `
+        $('walletHistoryCard').innerHTML = data.recent.map((d) => `
           <div class="recent-drop-row">
             <div class="recent-drop-emoji">${mediaFor(d, 'media-odds')}</div>
             <div class="recent-drop-name">${d.name}</div>
@@ -1014,10 +1366,30 @@
           </div>
         `).join('');
       } else {
-        $('recentDropsCard').innerHTML = `<div class="pick-empty">Пока нет дропов</div>`;
+        $('walletHistoryCard').innerHTML = `<div class="pick-empty">Пока нет дропов</div>`;
       }
     } catch (e) {
       // тихо игнорируем - это не критично для игры
+    }
+  }
+
+  /* ---------- ГЛОБАЛЬНЫЙ ТИКЕР ДРОПОВ (все игроки, верх главной вкладки) ---------- */
+  async function loadGlobalDropsTicker() {
+    try {
+      const data = await api('/api/drops/global');
+      if (!data.drops.length) {
+        $('dropsTicker').innerHTML = `<div class="pick-empty">Пока нет дропов</div>`;
+        return;
+      }
+      $('dropsTicker').innerHTML = data.drops.map((d) => `
+        <div class="drop-chip rarity-${d.rarity}">
+          <div>${mediaFor(d, 'media-odds')}</div>
+          <div class="drop-chip-value">🪙 ${d.value}</div>
+          <div class="drop-chip-player">${d.player}</div>
+        </div>
+      `).join('');
+    } catch (e) {
+      // тихо игнорируем
     }
   }
 
@@ -1083,6 +1455,7 @@
     await loadDailyStatus();
     await loadCases();
     await loadDrops();
+    await loadGlobalDropsTicker();
     renderSlots();
     const av = state._name ? state._name[0].toUpperCase()
              : (state.tgId ? String(state.tgId).slice(-1) : 'U');
