@@ -313,7 +313,8 @@
     padding: 8px 0 6px; border-radius: 14px; cursor: pointer;
     transition: color .15s ease, background .15s ease, transform .08s ease;
   }
-  .nav-btn .nav-ic { font-size: 22px; line-height: 1; }
+  .nav-btn .nav-ic { display: flex; align-items: center; justify-content: center; }
+  .nav-btn .nav-ic svg { width: 22px; height: 22px; }
   .nav-btn.active {
     color: var(--lime);
     background: rgba(185,91,255,0.1);
@@ -383,6 +384,19 @@
     font-size: 11.5px; font-weight: 800; padding: 5px 12px; border-radius: 999px;
     text-transform: none; letter-spacing: normal;
   }
+
+  .top-drop-card {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+    border-color: rgba(255,201,74,0.35);
+  }
+  .top-drop-emoji { font-size: 36px; flex-shrink: 0; }
+  .top-drop-info { flex: 1; min-width: 0; }
+  .top-drop-label { font-size: 10.5px; font-weight: 800; color: var(--muted); letter-spacing: 0.5px; }
+  .top-drop-name { font-size: 14px; font-weight: 900; margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .top-drop-source { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .top-drop-right { text-align: right; flex-shrink: 0; }
+  .top-drop-value { font-size: 15px; font-weight: 900; color: var(--gold); }
+  .top-drop-player { font-size: 10.5px; color: var(--muted); font-weight: 700; margin-top: 2px; }
 
   /* ============================================================
      ДЕТАЛЬНАЯ СТРАНИЦА КЕЙСА (тап по кейсу в сетке)
@@ -593,6 +607,19 @@
   </header>
 
   <main class="screen active" id="screen-cases">
+    <div class="card top-drop-card" id="topDropCard" style="display:none;">
+      <div class="top-drop-emoji" id="topDropEmoji">🏆</div>
+      <div class="top-drop-info">
+        <div class="top-drop-label">🏆 ТОП ДРОП ЗА 24 ЧАСА</div>
+        <div class="top-drop-name" id="topDropName">—</div>
+        <div class="top-drop-source" id="topDropSource"></div>
+      </div>
+      <div class="top-drop-right">
+        <div class="top-drop-value" id="topDropValue">🪙 0</div>
+        <div class="top-drop-player" id="topDropPlayer"></div>
+      </div>
+    </div>
+
     <div class="drops-ticker-wrap">
       <div class="drops-ticker-label"><span class="live-dot"></span>ПОСЛЕДНИЕ ДРОПЫ</div>
       <div class="drops-ticker" id="dropsTicker"></div>
@@ -716,11 +743,26 @@
   </main>
 
   <nav class="bottom-nav">
-    <button class="nav-btn active" data-tab="cases"><span class="nav-ic">🏠</span>Главная</button>
-    <button class="nav-btn" data-tab="upgrader"><span class="nav-ic">⚡</span>Апгрейдер</button>
-    <button class="nav-btn" data-tab="inventory"><span class="nav-ic">🎒</span>Инвентарь</button>
-    <button class="nav-btn" data-tab="wallet"><span class="nav-ic">💳</span>Кошелёк</button>
-    <button class="nav-btn" data-tab="profile"><span class="nav-ic">👤</span>Профиль</button>
+    <button class="nav-btn active" data-tab="cases">
+      <span class="nav-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg></span>
+      Главная
+    </button>
+    <button class="nav-btn" data-tab="upgrader">
+      <span class="nav-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg></span>
+      Апгрейдер
+    </button>
+    <button class="nav-btn" data-tab="inventory">
+      <span class="nav-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg></span>
+      Инвентарь
+    </button>
+    <button class="nav-btn" data-tab="wallet">
+      <span class="nav-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h13a1 1 0 0 1 1 1v3"/><path d="M3 7v10a2 2 0 0 0 2 2h14a1 1 0 0 0 1-1v-4"/><path d="M17 12h3v3h-3a1.5 1.5 0 0 1 0-3z"/></svg></span>
+      Кошелёк
+    </button>
+    <button class="nav-btn" data-tab="profile">
+      <span class="nav-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg></span>
+      Профиль
+    </button>
   </nav>
 
   <div class="sheet-overlay" id="sheetOverlay">
@@ -908,6 +950,7 @@
       await loadDailyStatus();
       await loadDrops();
       await loadGlobalDropsTicker();
+    await loadTopDrop24h();
     } catch (e) {
       showToast(e.message);
     }
@@ -1122,6 +1165,7 @@
     await loadInventory();
     await loadDrops();
     await loadGlobalDropsTicker();
+    await loadTopDrop24h();
   });
 
   /* ---------- КОЛЕСО ---------- */
@@ -1412,6 +1456,25 @@
     }
   }
 
+  async function loadTopDrop24h() {
+    try {
+      const data = await api('/api/drops/top24h');
+      if (!data.top) {
+        $('topDropCard').style.display = 'none';
+        return;
+      }
+      const t = data.top;
+      $('topDropCard').style.display = 'flex';
+      $('topDropEmoji').innerHTML = mediaFor(t, 'media-odds');
+      $('topDropName').textContent = t.name;
+      $('topDropSource').textContent = t.case_name ? `из «${t.case_name}»` : 'ежедневный бонус';
+      $('topDropValue').innerHTML = `🪙 ${t.value}`;
+      $('topDropPlayer').textContent = '@' + t.player;
+    } catch (e) {
+      // тихо игнорируем
+    }
+  }
+
   async function loadInventory() {
     try {
       const inv = await api('/api/inventory');
@@ -1475,6 +1538,7 @@
     await loadCases();
     await loadDrops();
     await loadGlobalDropsTicker();
+    await loadTopDrop24h();
     renderSlots();
     const av = state._name ? state._name[0].toUpperCase()
              : (state.tgId ? String(state.tgId).slice(-1) : 'U');
