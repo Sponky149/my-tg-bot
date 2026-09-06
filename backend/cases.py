@@ -32,7 +32,7 @@ def open_case(db: Session, user: User, case_id: int, quantity: int = 1) -> list[
         db.add(InventoryItem(user_id=user.id, item_id=won_item.id))
         db.add(DropLog(
             user_id=user.id, item_name=won_item.name, item_rarity=won_item.rarity,
-            item_value=won_item.value, source="case", created_at=datetime.utcnow()
+            item_value=won_item.value, source="case", case_name=case.name, created_at=datetime.utcnow()
         ))
 
     user.cases_opened = (user.cases_opened or 0) + quantity
