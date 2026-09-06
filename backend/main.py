@@ -1,6 +1,7 @@
 import asyncio
 import os
 import json
+from datetime import datetime
 from fastapi import FastAPI, Depends, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -127,6 +128,35 @@ def global_drops(db: Session = Depends(get_db)):
             "player": display_name,
         })
     return {"drops": result}
+
+
+@app.get("/api/drops/top24h")
+def top_drop_24h(db: Session = Depends(get_db)):
+    """Самый дорогой предмет, выпавший у ЛЮБОГО игрока за последние 24 часа."""
+    from database import DropLog
+    from datetime import timedelta
+
+    since = datetime.utcnow() - timedelta(hours=24)
+    row = (
+        db.query(DropLog, User)
+        .join(User, DropLog.user_id == User.id)
+        .filter(DropLog.created_at >= since)
+        .order_by(DropLog.item_value.desc())
+        .first()
+    )
+
+    if not row:
+        return {"top": None}
+
+    drop, u = row
+    display_name = u.username or f"id{u.telegram_id}"
+    return {"top": {
+        "name": drop.item_name,
+        "rarity": drop.item_rarity,
+        "value": drop.item_value,
+        "player": display_name,
+        "case_name": drop.case_name,
+    }}
 
 
 @app.get("/api/inventory")
