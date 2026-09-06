@@ -82,6 +82,7 @@ class DropLog(Base):
     item_rarity = Column(String)
     item_value = Column(Float)
     source = Column(String)  # "case" или "daily"
+    case_name = Column(String, nullable=True)  # из какого кейса выпало (если кейс, не бонус)
     created_at = Column(DateTime, default=datetime.utcnow)
 
 
