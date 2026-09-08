@@ -625,14 +625,6 @@
       <div class="drops-ticker" id="dropsTicker"></div>
     </div>
 
-    <div class="section-title">Ежедневный кейс</div>
-    <div class="card" style="text-align:center; padding: 24px 18px;">
-      <div style="font-size:48px; line-height:1;">🎁</div>
-      <div style="font-weight:900; font-size:16px; margin-top:8px;">Бесплатный кейс</div>
-      <div class="label" id="dailyStatus" style="margin-top:8px; font-size:12.5px;">Проверяем...</div>
-      <button class="case-open press" id="dailyOpenBtn" style="margin-top:14px;" disabled>Открыть</button>
-    </div>
-
     <div class="slogan">ОТКРЫВАЙ. <span class="slogan-pink">ЛОВИ.</span> ЗАБИРАЙ.</div>
     <div class="section-title" style="display:flex; align-items:center; justify-content:space-between;">
       <span>Кейсы</span>
@@ -896,74 +888,61 @@
     });
   });
 
-  /* ---------- ЕЖЕДНЕВНЫЙ БЕСПЛАТНЫЙ КЕЙС ---------- */
+  /* ---------- ЕЖЕДНЕВНЫЙ БЕСПЛАТНЫЙ КЕЙС (теперь как обычная карточка в сетке) ---------- */
   let dailyTimer = null;
+  state.dailyStatus = { can_claim: false, seconds_left: 0 };
 
-  function updateDailyUI(data) {
+  function formatCountdown(sec) {
+    const h = Math.floor(sec / 3600);
+    const m = Math.floor((sec % 3600) / 60);
+    const s = sec % 60;
+    return `${h}ч ${m}м ${s}с`;
+  }
+
+  function updateFreeCaseLabel() {
+    const el = $('freeCaseLabel');
+    if (!el) return;
+    el.textContent = state.dailyStatus.can_claim ? '🎁 Бесплатно' : formatCountdown(state.dailyStatus.seconds_left);
+  }
+
+  function startDailyCountdown() {
     clearInterval(dailyTimer);
-    const btn = $('dailyOpenBtn');
-    const statusEl = $('dailyStatus');
-
-    if (data.can_claim) {
-      statusEl.textContent = 'Доступен прямо сейчас!';
-      btn.disabled = false;
-      btn.textContent = '🎁 Открыть';
-      return;
-    }
-
-    btn.disabled = true;
-    btn.textContent = 'Уже открыт';
-    let secondsLeft = data.seconds_left;
-
-    function tick() {
-      if (secondsLeft <= 0) {
+    if (state.dailyStatus.can_claim) { updateFreeCaseLabel(); return; }
+    dailyTimer = setInterval(() => {
+      state.dailyStatus.seconds_left = Math.max(0, state.dailyStatus.seconds_left - 1);
+      if (state.dailyStatus.seconds_left <= 0) {
         clearInterval(dailyTimer);
         loadDailyStatus();
         return;
       }
-      const h = Math.floor(secondsLeft / 3600);
-      const m = Math.floor((secondsLeft % 3600) / 60);
-      const s = secondsLeft % 60;
-      statusEl.textContent = `Следующий через ${h}ч ${m}м ${s}с`;
-      secondsLeft--;
-    }
-    tick();
-    dailyTimer = setInterval(tick, 1000);
+      updateFreeCaseLabel();
+    }, 1000);
   }
 
   async function loadDailyStatus() {
     try {
       const data = await api('/api/daily/status');
-      updateDailyUI(data);
+      state.dailyStatus = data;
+      updateFreeCaseLabel();
+      startDailyCountdown();
     } catch (e) {
       showToast('Не удалось проверить кейс');
     }
   }
 
-  $('dailyOpenBtn').addEventListener('click', async () => {
-    try {
-      const data = await api('/api/daily/open', { method: 'POST' });
-      showToast(`Выпало: ${data.item.name} (${data.item.rarity})!`);
-      playSound('win');
-      await loadProfile();
-      await loadInventory();
-      await loadDailyStatus();
-      await loadDrops();
-      await loadGlobalDropsTicker();
-    await loadTopDrop24h();
-    } catch (e) {
-      showToast(e.message);
-    }
-  });
-
-  /* ---------- ПЛАТНЫЕ КЕЙСЫ ---------- */
+  /* ---------- ПЛАТНЫЕ КЕЙСЫ + БЕСПЛАТНЫЙ (одна сетка) ---------- */
   function renderCases() {
-    $('caseTotalBadge').textContent = `${state.cases.length} кейсов`;
-    if (!state.cases.length) {
-      $('casesGrid').innerHTML = `<div class="pick-empty">Кейсов пока нет</div>`;
-      return;
-    }
-    $('casesGrid').innerHTML = state.cases.map((c) => `
+    $('caseTotalBadge').textContent = `${state.cases.length + 1} кейсов`;
+
+    const freeCard = `
+      <div class="case-card press" data-open-detail="daily">
+        <div class="case-emoji"><img src="/images/free_case.jpg" class="media-case" alt="" /></div>
+        <div class="case-name">Free Case</div>
+        <div class="case-count">раз в 24ч</div>
+        <div class="case-open" id="freeCaseLabel">Проверяем...</div>
+      </div>`;
+
+    const paidCards = state.cases.map((c) => `
       <div class="case-card press" data-open-detail="${c.id}">
         <div class="case-emoji">${c.image_url ? `<img src="${c.image_url}" class="media-case" alt="" />` : '📦'}</div>
         <div class="case-name">${c.name}</div>
@@ -972,10 +951,13 @@
       </div>
     `).join('');
 
-    // тап по всей карточке кейса - открыть детальную страницу
+    $('casesGrid').innerHTML = freeCard + paidCards;
+
     document.querySelectorAll('[data-open-detail]').forEach((el) => {
       el.addEventListener('click', () => openCaseDetail(el.dataset.openDetail));
     });
+
+    updateFreeCaseLabel();
   }
 
   async function loadCases() {
@@ -988,24 +970,53 @@
     }
   }
 
-  /* ---------- ДЕТАЛЬНАЯ СТРАНИЦА КЕЙСА ---------- */
+  /* ---------- ДЕТАЛЬНАЯ СТРАНИЦА КЕЙСА (обычного и бесплатного) ---------- */
   const detailState = { caseId: null, qty: 1, speed: 'slow' };
 
   async function openCaseDetail(caseId) {
-    const c = state.cases.find((x) => String(x.id) === String(caseId));
-    if (!c) return;
-
     detailState.caseId = caseId;
     detailState.qty = 1;
     detailState.speed = 'slow';
+
+    document.querySelectorAll('#qtyRow .qty-btn').forEach((b) => b.classList.toggle('active', b.dataset.qty === '1'));
+    document.querySelectorAll('#speedRow .speed-btn').forEach((b) => b.classList.toggle('active', b.dataset.speed === 'slow'));
+
+    if (caseId === 'daily') {
+      $('qtyRow').style.display = 'none';
+      $('detailTitle').textContent = 'Free Case';
+      $('detailPrice').innerHTML = 'БЕСПЛАТНО';
+      $('detailCount').textContent = state.allItems.length;
+      $('detailChestEmoji').innerHTML = `<img src="/images/free_case.jpg" alt="" />`;
+
+      const btn = $('detailOpenBtn');
+      if (state.dailyStatus.can_claim) {
+        btn.textContent = '🎁 Открыть';
+        btn.disabled = false;
+      } else {
+        btn.textContent = formatCountdown(state.dailyStatus.seconds_left);
+        btn.disabled = true;
+      }
+
+      $('detailItemsGrid').innerHTML = state.allItems.map((it) => `
+        <div class="detail-item-card rarity-${it.rarity}">
+          <div class="detail-item-emoji">${mediaFor(it, 'media-odds')}</div>
+          <div class="detail-item-name">${it.name}</div>
+          <div class="detail-item-price">🪙 ${it.value}</div>
+        </div>
+      `).join('');
+
+      $('caseDetailOverlay').classList.add('show');
+      return;
+    }
+
+    $('qtyRow').style.display = '';
+    const c = state.cases.find((x) => String(x.id) === String(caseId));
+    if (!c) return;
 
     $('detailTitle').textContent = c.name;
     $('detailPrice').innerHTML = `🪙 ${c.price}`;
     $('detailCount').textContent = c.item_count;
     $('detailChestEmoji').innerHTML = c.image_url ? `<img src="${c.image_url}" alt="" />` : '📦';
-
-    document.querySelectorAll('#qtyRow .qty-btn').forEach((b) => b.classList.toggle('active', b.dataset.qty === '1'));
-    document.querySelectorAll('#speedRow .speed-btn').forEach((b) => b.classList.toggle('active', b.dataset.speed === 'slow'));
 
     updateDetailOpenBtn(c);
 
@@ -1063,7 +1074,24 @@
     });
   });
 
-  $('detailOpenBtn').addEventListener('click', () => {
+  $('detailOpenBtn').addEventListener('click', async () => {
+    if (detailState.caseId === 'daily') {
+      $('caseDetailOverlay').classList.remove('show');
+      try {
+        const data = await api('/api/daily/open', { method: 'POST' });
+        showToast(`Выпало: ${data.item.name} (${data.item.rarity})!`);
+        playSound('win');
+        await loadProfile();
+        await loadInventory();
+        await loadDailyStatus();
+        await loadDrops();
+        await loadGlobalDropsTicker();
+        await loadTopDrop24h();
+      } catch (e) {
+        showToast(e.message);
+      }
+      return;
+    }
     $('caseDetailOverlay').classList.remove('show');
     openCaseWithAnimation(detailState.caseId, detailState.qty, detailState.speed);
   });
