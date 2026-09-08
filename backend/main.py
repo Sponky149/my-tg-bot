@@ -19,11 +19,18 @@ from cases import open_case
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 WEBAPP_URL = os.getenv("WEBAPP_URL")
 
-app = FastAPI()
+app = FastAPI(
+    # /docs и /redoc отключены в проде - не даём чужим людям видеть список
+    # всех твоих API-эндпоинтов и тыкать их вручную из браузера
+    docs_url=None,
+    redoc_url=None,
+)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    # сюда впиши свой реальный домен на Render (например https://brainup-bot-v51h.onrender.com)
+    # вместо "*" - это не главная защита (главная - подпись initData), но так чище
+    allow_origins=[os.getenv("WEBAPP_URL", "*")],
     allow_methods=["*"],
     allow_headers=["*"],
 )
