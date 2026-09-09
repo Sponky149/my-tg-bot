@@ -936,7 +936,7 @@
 
     const freeCard = `
       <div class="case-card press" data-open-detail="daily">
-        <div class="case-emoji"><img src="/images/free_case.jpg" class="media-case" alt="" /></div>
+        <div class="case-emoji"><img src="/images/free.jpg" class="media-case" alt="" /></div>
         <div class="case-name">Free Case</div>
         <div class="case-count">раз в 24ч</div>
         <div class="case-open" id="freeCaseLabel">Проверяем...</div>
@@ -986,7 +986,7 @@
       $('detailTitle').textContent = 'Free Case';
       $('detailPrice').innerHTML = 'БЕСПЛАТНО';
       $('detailCount').textContent = state.allItems.length;
-      $('detailChestEmoji').innerHTML = `<img src="/images/free_case.jpg" alt="" />`;
+      $('detailChestEmoji').innerHTML = `<img src="/images/free.jpg" alt="" />`;
 
       const btn = $('detailOpenBtn');
       if (state.dailyStatus.can_claim) {
