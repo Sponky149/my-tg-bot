@@ -21,16 +21,17 @@ if existing > 0:
     db.close()
 else:
     items_data = [
-        {"name": "Bombardiro Crocodilo", "rarity": "common", "value": 10, "image_url": ""},
-        {"name": "Tung Tung Tung Sahur", "rarity": "common", "value": 15, "image_url": ""},
-        {"name": "Ballerina Cappuccina", "rarity": "common", "value": 12, "image_url": ""},
-        {"name": "Boneca Ambalabu", "rarity": "common", "value": 8, "image_url": ""},
-        {"name": "Brr Brr Patapim", "rarity": "common", "value": 18, "image_url": ""},
-        {"name": "Chimpanzini Bananini", "rarity": "common", "value": 14, "image_url": ""},
-        {"name": "Lirili Larila", "rarity": "common", "value": 9, "image_url": ""},
-        {"name": "Trippi Troppi", "rarity": "common", "value": 11, "image_url": ""},
-        {"name": "Girafa Celestre", "rarity": "common", "value": 16, "image_url": ""},
-        {"name": "Frigo Camelo", "rarity": "common", "value": 13, "image_url": ""},
+        {"name": "La Grande", "rarity": "common", "value": 9, "image_url": "/images/la_grande.jpg"},
+        {"name": "67", "rarity": "common", "value": 12, "image_url": "/images/sixty_seven.jpg"},
+        {"name": "Bacuru and Egguru", "rarity": "common", "value": 15, "image_url": "/images/bacuru_and_egguru.jpg"},
+        {"name": "Los Mobilis", "rarity": "common", "value": 18, "image_url": "/images/los_mobilis.jpg"},
+        {"name": "Ketupat Kepat", "rarity": "common", "value": 19, "image_url": "/images/ketupat_kepat.jpg"},
+        {"name": "Noodle Noodle Poodle", "rarity": "common", "value": 24, "image_url": "/images/noodle_noodle_poodle.jpg"},
+        {"name": "Capitano Gullini", "rarity": "common", "value": 25, "image_url": "/images/capitano_gullini.jpg"},
+        {"name": "Tic Tac Sahur", "rarity": "common", "value": 26, "image_url": "/images/tic_tac_sahur.jpg"},
+        {"name": "Ketchuru and Musturu", "rarity": "common", "value": 29, "image_url": "/images/ketchuru_and_musturu.jpg"},
+        {"name": "Los Mariachis", "rarity": "common", "value": 35, "image_url": "/images/los_mariachis.jpg"},
+        {"name": "Coco and Mango", "rarity": "common", "value": 39, "image_url": "/images/coco_and_mango.jpg"},
         {"name": "Tralalero Tralala", "rarity": "rare", "value": 45, "image_url": ""},
         {"name": "Tric Trac Baraboom", "rarity": "rare", "value": 60, "image_url": ""},
         {"name": "Bobritto Bandito", "rarity": "rare", "value": 55, "image_url": ""},
@@ -59,23 +60,23 @@ else:
     print(f"Добавлено предметов: {len(items)}")
 
     cases_data = [
-        {"name": "Lucky Case", "price": 49, "image_url": "", "item_names": [
-            "Bombardiro Crocodilo", "Tung Tung Tung Sahur", "Boneca Ambalabu",
-            "Chimpanzini Bananini", "Lirili Larila", "Tralalero Tralala",
+        {"name": "Lucky Case", "price": 49, "image_url": "/images/Lucky.jpg", "item_names": [
+            "Bacuru and Egguru", "Tic Tac Sahur", "La Grande",
+            "Capitano Gullini", "67", "Tralalero Tralala",
             "Ta Ta Ta Sahur", "Blueberrinni Octopusini"]},
-        {"name": "Crazy Case", "price": 79, "image_url": "/images/crazy_case.jpg", "item_names": [
-            "Brr Brr Patapim", "Girafa Celestre", "Frigo Camelo",
+        {"name": "Crazy Case", "price": 79, "image_url": "/images/crazy.jpg", "item_names": [
+            "Los Mariachis", "Ketchuru and Musturu", "Noodle Noodle Poodle",
             "Bobritto Bandito", "Espresso Signora", "Tric Trac Baraboom",
             "Cappuccino Assassino", "Odin Din Din Dun Boom"]},
-        {"name": "Mystery Case", "price": 99, "image_url": "/images/mystery_case.jpg", "item_names": [
-            "Trippi Troppi", "Bombardiro Crocodilo", "U Din Din Din Dun",
+        {"name": "Mystery Case", "price": 99, "image_url": "/images/mystery.jpg", "item_names": [
+            "Los Mobilis", "Bacuru and Egguru", "U Din Din Din Dun",
             "Piccione Macchina", "Cocofanto Elefanto", "Garama and Madundung",
             "Trulimero Trulicina", "Los Tralaleritos"]},
-        {"name": "Rich Case", "price": 149, "image_url": "/images/rich_case.jpg", "item_names": [
+        {"name": "Rich Case", "price": 149, "image_url": "/images/rich.jpg", "item_names": [
             "Tralalero Tralala", "Bobritto Bandito", "Ta Ta Ta Sahur",
             "Cappuccino Assassino", "Blueberrinni Octopusini", "La Vacca Saturno Saturnita",
             "Odin Din Din Dun Boom", "Los Tralaleritos"]},
-        {"name": "Legend Case", "price": 249, "image_url": "/images/legend_case.jpg", "item_names": [
+        {"name": "Legend Case", "price": 249, "image_url": "/images/legend.jpg", "item_names": [
             "Espresso Signora", "Cocofanto Elefanto", "Garama and Madundung",
             "Trulimero Trulicina", "La Vacca Saturno Saturnita", "Cappuccino Assassino",
             "Odin Din Din Dun Boom", "Los Tralaleritos"]},
@@ -83,7 +84,7 @@ else:
             "Cappuccino Assassino", "Garama and Madundung", "Blueberrinni Octopusini",
             "Trulimero Trulicina", "La Vacca Saturno Saturnita", "Odin Din Din Dun Boom",
             "Los Tralaleritos", "Cocofanto Elefanto"]},
-        {"name": "Case God", "price": 1000, "image_url": "/images/god_case.jpg", "item_names": [
+        {"name": "Case God", "price": 1000, "image_url": "/images/god.jpg", "item_names": [
             "Odin Din Din Dun Boom", "Los Tralaleritos", "Cappuccino Assassino",
             "Garama and Madundung", "Blueberrinni Octopusini", "Trulimero Trulicina",
             "La Vacca Saturno Saturnita", "Cocofanto Elefanto"]},
