@@ -211,7 +211,6 @@
   .case-emoji img {
     width: 100%; height: 100%; object-fit: contain;
     mix-blend-mode: multiply; /* "срезает" белый фон картинки, сливая его с тёмной карточкой */
-    filter: drop-shadow(0 6px 14px rgba(124,58,237,0.35));
   }
   .case-card:hover .case-emoji { transform: translateY(-3px) scale(1.05); }
   .case-name {
@@ -956,7 +955,7 @@
 
     const freeCard = `
       <div class="case-card press" data-open-detail="daily">
-        <div class="case-emoji"><img src="/images/free.jpg" alt="" /></div>
+        <div class="case-emoji"><img src="/images/free.png" alt="" /></div>
         <div class="case-name">Free Case</div>
         <div class="case-stats-row">
           <span class="case-count-pill">🕐 раз в 24ч</span>
@@ -1010,7 +1009,7 @@
       $('detailTitle').textContent = 'Free Case';
       $('detailPrice').innerHTML = 'БЕСПЛАТНО';
       $('detailCount').textContent = state.allItems.length;
-      $('detailChestEmoji').innerHTML = `<img src="/images/free.jpg" alt="" />`;
+      $('detailChestEmoji').innerHTML = `<img src="/images/free.png" alt="" />`;
 
       const btn = $('detailOpenBtn');
       if (state.dailyStatus.can_claim) {
