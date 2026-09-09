@@ -204,19 +204,39 @@
     }
   }
   .case-emoji {
-    font-size: 46px; line-height: 1; position: relative; z-index: 1;
-    filter: drop-shadow(0 6px 14px rgba(124,58,237,0.35));
+    width: 100%; aspect-ratio: 1 / 1; position: relative; z-index: 1;
+    display: flex; align-items: center; justify-content: center;
     transition: transform 0.25s ease;
   }
+  .case-emoji img {
+    width: 100%; height: 100%; object-fit: contain;
+    mix-blend-mode: multiply; /* "срезает" белый фон картинки, сливая его с тёмной карточкой */
+    filter: drop-shadow(0 6px 14px rgba(124,58,237,0.35));
+  }
   .case-card:hover .case-emoji { transform: translateY(-3px) scale(1.05); }
-  .case-name { font-size: 14.5px; font-weight: 900; position: relative; z-index: 1; }
-  .case-count { font-size: 11px; color: var(--muted); font-weight: 700; position: relative; z-index: 1; }
-  .case-open {
-    margin-top: 4px; width: 100%; border: none; border-radius: var(--radius-sm);
-    background: linear-gradient(145deg, var(--lime), var(--emerald));
-    color: #fff; font-weight: 900; font-size: 14px; padding: 11px 0;
-    display: flex; align-items: center; justify-content: center; gap: 6px;
-    position: relative; z-index: 1;
+  .case-name {
+    font-size: 15px; font-weight: 900; position: relative; z-index: 1;
+    text-transform: uppercase; letter-spacing: 0.3px; margin-top: 4px;
+  }
+  .case-stats-row {
+    width: 100%; display: flex; align-items: center; justify-content: space-between;
+    margin-top: 8px; position: relative; z-index: 1;
+  }
+  .case-count-pill {
+    font-size: 11px; color: var(--muted); font-weight: 700;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .case-price-pill {
+    display: flex; align-items: center; gap: 5px;
+    background: var(--field); border: 1px solid var(--stroke);
+    border-radius: 999px; padding: 5px 10px 5px 6px;
+    font-size: 13px; font-weight: 900; color: var(--text);
+  }
+  .case-price-coin {
+    width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0;
+    background: linear-gradient(145deg, var(--gold), #ff9f4a);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: #1a1200;
   }
 
   /* ============================================================
@@ -438,7 +458,7 @@
     animation: chestFloat 3s ease-in-out infinite;
   }
   @keyframes chestFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-  .detail-chest-emoji img { width: 130px; height: 130px; object-fit: contain; }
+  .detail-chest-emoji img { width: 130px; height: 130px; object-fit: contain; mix-blend-mode: multiply; }
 
   .detail-title { text-align: center; font-size: 21px; font-weight: 900; margin-top: 8px; letter-spacing: 0.5px; }
 
@@ -585,11 +605,11 @@
   }
   .reel-close-btn.show { opacity: 1; pointer-events: auto; }
   /* картинки предметов - одинаковый вид независимо от того, где используются */
-  .media-slot { width: 40px; height: 40px; object-fit: contain; }
-  .media-pick { width: 36px; height: 36px; object-fit: contain; }
-  .media-odds { width: 26px; height: 26px; object-fit: contain; }
-  .media-reel { width: 48px; height: 48px; object-fit: contain; }
-  .media-case { width: 46px; height: 46px; object-fit: contain; }
+  .media-slot { width: 40px; height: 40px; object-fit: contain; mix-blend-mode: multiply; }
+  .media-pick { width: 36px; height: 36px; object-fit: contain; mix-blend-mode: multiply; }
+  .media-odds { width: 26px; height: 26px; object-fit: contain; mix-blend-mode: multiply; }
+  .media-reel { width: 48px; height: 48px; object-fit: contain; mix-blend-mode: multiply; }
+  .media-case { width: 46px; height: 46px; object-fit: contain; mix-blend-mode: multiply; }
 </style>
 </head>
 <body>
@@ -936,18 +956,22 @@
 
     const freeCard = `
       <div class="case-card press" data-open-detail="daily">
-        <div class="case-emoji"><img src="/images/free.jpg" class="media-case" alt="" /></div>
+        <div class="case-emoji"><img src="/images/free.jpg" alt="" /></div>
         <div class="case-name">Free Case</div>
-        <div class="case-count">раз в 24ч</div>
-        <div class="case-open" id="freeCaseLabel">Проверяем...</div>
+        <div class="case-stats-row">
+          <span class="case-count-pill">🕐 раз в 24ч</span>
+          <span class="case-price-pill" id="freeCaseLabel">Проверяем...</span>
+        </div>
       </div>`;
 
     const paidCards = state.cases.map((c) => `
       <div class="case-card press" data-open-detail="${c.id}">
-        <div class="case-emoji">${c.image_url ? `<img src="${c.image_url}" class="media-case" alt="" />` : '📦'}</div>
+        <div class="case-emoji">${c.image_url ? `<img src="${c.image_url}" alt="" />` : '📦'}</div>
         <div class="case-name">${c.name}</div>
-        <div class="case-count">${c.item_count} предм.</div>
-        <div class="case-open">🪙 ${c.price}</div>
+        <div class="case-stats-row">
+          <span class="case-count-pill">📦 ${c.item_count} внутри</span>
+          <span class="case-price-pill"><span class="case-price-coin">🪙</span>${c.price}</span>
+        </div>
       </div>
     `).join('');
 
