@@ -604,10 +604,10 @@
   }
   .reel-close-btn.show { opacity: 1; pointer-events: auto; }
   /* картинки предметов - одинаковый вид независимо от того, где используются */
-  .media-slot { width: 40px; height: 40px; object-fit: contain; mix-blend-mode: multiply; }
-  .media-pick { width: 36px; height: 36px; object-fit: contain; mix-blend-mode: multiply; }
-  .media-odds { width: 26px; height: 26px; object-fit: contain; mix-blend-mode: multiply; }
-  .media-reel { width: 48px; height: 48px; object-fit: contain; mix-blend-mode: multiply; }
+  .media-slot { width: 52px; height: 52px; object-fit: contain; }
+  .media-pick { width: 48px; height: 48px; object-fit: contain; }
+  .media-odds { width: 42px; height: 42px; object-fit: contain; }
+  .media-reel { width: 60px; height: 60px; object-fit: contain; }
   .media-case { width: 46px; height: 46px; object-fit: contain; mix-blend-mode: multiply; }
 </style>
 </head>
@@ -1127,7 +1127,7 @@
   const REEL_WIN_INDEX = 34;   // на какой по счёту карточке останавливаемся
 
   async function openCaseWithAnimation(caseId, quantity = 1, speed = 'slow') {
-    // сначала спрашиваем backend, что реально выпало (и списываем валюту)
+    // сначала спрашиваем backend, что реально выпало (и списываем валюту) - одним запросом на всё количество
     let result;
     try {
       result = await api(`/api/cases/${caseId}/open?quantity=${quantity}`, { method: 'POST' });
@@ -1138,58 +1138,65 @@
 
     const wonItems = result.items;
 
-    // при покупке нескольких сразу - лента ни к чему, просто показываем все призы карточками
-    if (quantity > 1) {
-      showMultiResult(wonItems);
-      return;
-    }
-
-    const wonItem = wonItems[0];
-
-    // берём пул предметов этого кейса, чтобы визуально заполнить ленту
+    // берём пул предметов этого кейса, чтобы визуально заполнить ленту "мусором" вокруг приза
     let pool = [];
     try {
       const data = await api(`/api/cases/${caseId}/items`);
       pool = data.items;
     } catch (e) {
-      pool = [{ name: wonItem.name, rarity: wonItem.rarity, value: 0 }];
+      pool = wonItems.map((w) => ({ name: w.name, rarity: w.rarity, value: 0 }));
     }
 
-    const track = [];
-    for (let i = 0; i < REEL_LENGTH; i++) {
-      track.push(i === REEL_WIN_INDEX ? wonItem : pool[Math.floor(Math.random() * pool.length)]);
-    }
-
-    $('reelTrack').innerHTML = track.map((it) => `
-      <div class="reel-item re-${it.rarity}">
-        <div class="re-emoji">${mediaFor(it, "media-reel")}</div>
-        <div class="re-value">🪙 ${it.value || ''}</div>
-      </div>
-    `).join('');
-
-    const trackEl = $('reelTrack');
-    const spinDuration = speed === 'fast' ? 1.6 : 4.5;
-    trackEl.style.transition = 'none';
-    trackEl.style.transform = 'translateX(0px)';
-    $('reelResult').textContent = '';
+    $('reelTrack').parentElement.style.display = '';
     $('reelCloseBtn').classList.remove('show');
     $('caseOpenOverlay').classList.add('show');
-    playSound('spin');
 
-    requestAnimationFrame(() => {
+    // крутим ленту по очереди для КАЖДОГО выпавшего предмета - как честное открытие N кейсов подряд
+    for (let idx = 0; idx < wonItems.length; idx++) {
+      await spinOnceToItem(wonItems[idx], pool, speed, idx, wonItems.length);
+    }
+
+    $('reelCloseBtn').classList.add('show');
+  }
+
+  function spinOnceToItem(wonItem, pool, speed, index, total) {
+    return new Promise((resolve) => {
+      const track = [];
+      for (let i = 0; i < REEL_LENGTH; i++) {
+        track.push(i === REEL_WIN_INDEX ? wonItem : pool[Math.floor(Math.random() * pool.length)]);
+      }
+
+      $('reelTrack').innerHTML = track.map((it) => `
+        <div class="reel-item re-${it.rarity}">
+          <div class="re-emoji">${mediaFor(it, "media-reel")}</div>
+          <div class="re-value">🪙 ${it.value || ''}</div>
+        </div>
+      `).join('');
+
+      const trackEl = $('reelTrack');
+      // при нескольких кейсах подряд крутим чуть быстрее каждую следующую, чтобы не растягивать надолго
+      const spinDuration = (speed === 'fast' ? 1.2 : total > 1 ? 2.6 : 4.5);
+      trackEl.style.transition = 'none';
+      trackEl.style.transform = 'translateX(0px)';
+      $('reelResult').textContent = total > 1 ? `Кейс ${index + 1} из ${total}...` : '';
+      playSound('spin');
+
       requestAnimationFrame(() => {
-        const viewportWidth = trackEl.parentElement.clientWidth;
-        const targetOffset = REEL_WIN_INDEX * REEL_ITEM_WIDTH + REEL_ITEM_WIDTH / 2 - viewportWidth / 2;
-        trackEl.style.transition = `transform ${spinDuration}s cubic-bezier(.08,.82,.11,1)`;
-        trackEl.style.transform = `translateX(-${targetOffset}px)`;
+        requestAnimationFrame(() => {
+          const viewportWidth = trackEl.parentElement.clientWidth;
+          const targetOffset = REEL_WIN_INDEX * REEL_ITEM_WIDTH + REEL_ITEM_WIDTH / 2 - viewportWidth / 2;
+          trackEl.style.transition = `transform ${spinDuration}s cubic-bezier(.08,.82,.11,1)`;
+          trackEl.style.transform = `translateX(-${targetOffset}px)`;
+        });
       });
-    });
 
-    setTimeout(() => {
-      $('reelResult').textContent = `🎉 ${wonItem.name} (${wonItem.rarity})`;
-      $('reelCloseBtn').classList.add('show');
-      playSound(wonItem.rarity === 'legendary' || wonItem.rarity === 'epic' ? 'bigwin' : 'win');
-    }, spinDuration * 1000 + 100);
+      setTimeout(() => {
+        $('reelResult').textContent = `🎉 ${wonItem.name} (${wonItem.rarity})`;
+        playSound(wonItem.rarity === 'legendary' || wonItem.rarity === 'epic' ? 'bigwin' : 'win');
+        // небольшая пауза, чтобы результат было видно, прежде чем крутить следующий
+        setTimeout(resolve, total > 1 ? 700 : 0);
+      }, spinDuration * 1000 + 100);
+    });
   }
 
   function showMultiResult(items) {
