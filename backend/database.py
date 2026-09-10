@@ -1,5 +1,5 @@
 import os
-from sqlalchemy import create_engine, Column, Integer, String, Float, ForeignKey, DateTime
+from sqlalchemy import create_engine, Column, Integer, String, Float, ForeignKey, DateTime, Boolean
 from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 from datetime import datetime
 
@@ -43,6 +43,8 @@ class Item(Base):
     rarity = Column(String)
     value = Column(Float)
     image_url = Column(String, nullable=True)
+    is_daily_pool = Column(Boolean, default=False)  # True = может выпасть из бесплатного ежедневного кейса
+    daily_weight = Column(Float, nullable=True)  # точный вес именно в бесплатном кейсе (перебивает вес по редкости)
 
 
 class InventoryItem(Base):
@@ -50,6 +52,7 @@ class InventoryItem(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     item_id = Column(Integer, ForeignKey("items.id"))
+    value_multiplier = Column(Float, default=1.0)  # x1/x2/x3/x4 - бонус удачи при выпадении
     obtained_at = Column(DateTime, default=datetime.utcnow)
 
     owner = relationship("User", back_populates="inventory")
