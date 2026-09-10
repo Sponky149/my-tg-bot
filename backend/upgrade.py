@@ -25,11 +25,12 @@ def perform_upgrade(db: Session, user: User, inventory_item_id: int, target_item
         raise ValueError("Целевой предмет не найден")
 
     source_item = inv_item.item
+    effective_source_value = source_item.value * (inv_item.value_multiplier or 1)
 
-    if target_item.value <= source_item.value:
+    if target_item.value <= effective_source_value:
         raise ValueError("Целевой предмет должен быть дороже исходного")
 
-    chance_percent = get_upgrade_chance(source_item.value, target_item.value)
+    chance_percent = get_upgrade_chance(effective_source_value, target_item.value)
 
     roll = random.uniform(0, 100)
     success = roll <= chance_percent
