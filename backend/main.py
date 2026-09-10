@@ -175,7 +175,9 @@ def get_inventory(user: User = Depends(get_current_user)):
             "item_id": inv.item.id,
             "name": inv.item.name,
             "rarity": inv.item.rarity,
-            "value": inv.item.value,
+            "value": inv.item.value * (inv.value_multiplier or 1),
+            "base_value": inv.item.value,
+            "multiplier": inv.value_multiplier or 1,
             "image_url": inv.item.image_url,
         })
     return {"inventory": items}
@@ -199,8 +201,17 @@ def daily_status(user: User = Depends(get_current_user)):
 @app.post("/api/daily/open")
 def daily_open(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     try:
-        item = open_daily_case(db, user)
-        return {"success": True, "item": {"name": item.name, "rarity": item.rarity, "value": item.value, "image_url": item.image_url}}
+        result = open_daily_case(db, user)
+        item = result["item"]
+        multiplier = result["multiplier"]
+        return {
+            "success": True,
+            "item": {
+                "name": item.name, "rarity": item.rarity,
+                "value": item.value * multiplier, "base_value": item.value,
+                "multiplier": multiplier, "image_url": item.image_url,
+            },
+        }
     except ValueError as e:
         raise HTTPException(400, str(e))
 
@@ -248,12 +259,16 @@ def open_case_endpoint(
     db: Session = Depends(get_db),
 ):
     try:
-        items = open_case(db, user, case_id, quantity)
+        results = open_case(db, user, case_id, quantity)
         return {
             "success": True,
             "items": [
-                {"name": i.name, "rarity": i.rarity, "value": i.value, "image_url": i.image_url}
-                for i in items
+                {
+                    "name": r["item"].name, "rarity": r["item"].rarity,
+                    "value": r["item"].value * r["multiplier"], "base_value": r["item"].value,
+                    "multiplier": r["multiplier"], "image_url": r["item"].image_url,
+                }
+                for r in results
             ],
         }
     except ValueError as e:
