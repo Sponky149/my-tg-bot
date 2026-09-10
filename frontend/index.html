@@ -1102,7 +1102,8 @@
       $('caseDetailOverlay').classList.remove('show');
       try {
         const data = await api('/api/daily/open', { method: 'POST' });
-        showToast(`Выпало: ${data.item.name} (${data.item.rarity})!`);
+        const bonus = data.item.multiplier > 1 ? ` 🔥×${data.item.multiplier} БОНУС!` : '';
+        showToast(`Выпало: ${data.item.name} (${data.item.rarity})!${bonus}`);
         playSound('win');
         await loadProfile();
         await loadInventory();
@@ -1191,7 +1192,8 @@
       });
 
       setTimeout(() => {
-        $('reelResult').textContent = `🎉 ${wonItem.name} (${wonItem.rarity})`;
+        const bonusTag = wonItem.multiplier > 1 ? ` 🔥×${wonItem.multiplier}` : '';
+        $('reelResult').textContent = `🎉 ${wonItem.name} (${wonItem.rarity})${bonusTag}`;
         playSound(wonItem.rarity === 'legendary' || wonItem.rarity === 'epic' ? 'bigwin' : 'win');
         // небольшая пауза, чтобы результат было видно, прежде чем крутить следующий
         setTimeout(resolve, total > 1 ? 700 : 0);
