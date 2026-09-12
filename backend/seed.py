@@ -9,6 +9,11 @@ RARITY_WEIGHT = {
     "legendary": 2,
 }
 
+# ============================================================
+# КАРТИНКИ - впиши сюда свои ссылки (см. инструкцию ниже).
+# Если оставить пустую строку "" - будет показываться эмодзи по редкости,
+# как сейчас. Как только впишешь ссылку - на фронте появится картинка.
+# ============================================================
 
 existing = db.query(Item).count()
 if existing > 0:
@@ -18,9 +23,9 @@ else:
     items_data = [
         {"name": "La Grande", "rarity": "common", "value": 9, "image_url": "/images/la_grande.png"},
         {"name": "67", "rarity": "common", "value": 12, "image_url": "/images/sixty_seven.png"},
-        {"name": "1 Cash", "rarity": "common", "value": 1, "is_daily_pool": True, "daily_weight": 50, "image_url": ""},
-        {"name": "3 Cash", "rarity": "common", "value": 3, "is_daily_pool": True, "daily_weight": 25, "image_url": ""},
-        {"name": "5 Cash", "rarity": "common", "value": 5, "is_daily_pool": True, "daily_weight": 10, "image_url": ""},
+        {"name": "1 Cash", "rarity": "common", "value": 1, "is_daily_pool": True, "daily_weight": 50, "image_url": "/images/cash1.png"},
+        {"name": "3 Cash", "rarity": "common", "value": 3, "is_daily_pool": True, "daily_weight": 25, "image_url": "/images/cash3.png"},
+        {"name": "5 Cash", "rarity": "common", "value": 5, "is_daily_pool": True, "daily_weight": 10, "image_url": "/images/cash5.png"},
         {"name": "Bacuru and Egguru", "rarity": "common", "value": 15, "image_url": "/images/bacuru_and_egguru.png"},
         {"name": "Los Mobilis", "rarity": "common", "value": 18, "image_url": "/images/los_mobilis.png"},
         {"name": "Ketupat Kepat", "rarity": "common", "value": 19, "image_url": "/images/ketupat_kepat.png"},
@@ -30,7 +35,7 @@ else:
         {"name": "Ketchuru and Musturu", "rarity": "common", "value": 29, "image_url": "/images/ketchuru_and_musturu.png"},
         {"name": "Los Mariachis", "rarity": "common", "value": 35, "image_url": "/images/los_mariachis.png"},
         {"name": "Coco and Mango", "rarity": "common", "value": 39, "image_url": "/images/coco_and_mango.png"},
-        {"name": "Steakini Fattini", "rarity": "rare", "value": 49, "image_url": "/images/steakini_fattini.jpg"},
+        {"name": "Steakini Fattini", "rarity": "rare", "value": 49, "image_url": ""},
         {"name": "W or L", "rarity": "rare", "value": 65, "image_url": ""},
         {"name": "Gold Gold Gold", "rarity": "rare", "value": 55, "image_url": ""},
         {"name": "Jolly Jolly Sahur", "rarity": "rare", "value": 99, "image_url": ""},
@@ -58,7 +63,7 @@ else:
         {"name": "Fragola La La La", "rarity": "rare", "value": 42, "image_url": ""},
         {"name": "La Taco Combinasion", "rarity": "common", "value": 30, "image_url": ""},
         {"name": "Burguro And Fryuro", "rarity": "common", "value": 27, "image_url": ""},
-        {"name": "Garama and Madundung", "rarity": "common", "value": 25, "is_daily_pool": True, "daily_weight": 0.1, "image_url": ""},
+        {"name": "Garama and Madundung", "rarity": "common", "value": 25, "is_daily_pool": True, "daily_weight": 0.1, "image_url": "/images/garama.png"},
         {"name": "John Doe", "rarity": "common", "value": 25, "image_url": ""},
         {"name": "Mariachi Corazoni", "rarity": "common", "value": 9, "image_url": ""},
     ]
