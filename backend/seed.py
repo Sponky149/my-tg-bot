@@ -52,7 +52,7 @@ else:
         {"name": "Rubiko and Kubiko", "rarity": "epic", "value": 379, "image_url": ""},
         {"name": "Fortunu and Cashuru", "rarity": "epic", "value": 399, "image_url": "/images/fortunu_and_cashuru.png"},
         {"name": "La Supreme Combinasion", "rarity": "legendary", "value": 2999, "image_url": ""},
-        {"name": "Griffin", "rarity": "legendary", "value": 4499, "image_url": ""},
+        {"name": "Griffin", "rarity": "legendary", "value": 4499, "image_url": "/images/griffin.png"},
         {"name": "Dragon Gingerini", "rarity": "legendary", "value": 5999, "image_url": ""},
         {"name": "Antonio", "rarity": "legendary", "value": 8499, "image_url": ""},
         {"name": "Skibidi Toilet", "rarity": "legendary", "value": 13999, "image_url": ""},
