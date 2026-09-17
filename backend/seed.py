@@ -62,9 +62,9 @@ else:
         {"name": "Tuff Toucan", "rarity": "rare", "value": 45, "image_url": ""},
         {"name": "Fragola La La La", "rarity": "rare", "value": 42, "image_url": "/images/fragola_la_la_la.png"},
         {"name": "La Taco Combinasion", "rarity": "common", "value": 30, "image_url": ""},
-        {"name": "Burguro And Fryuro", "rarity": "common", "value": 27, "image_url": ""},
+        {"name": "Burguro And Fryuro", "rarity": "common", "value": 27, "image_url": "/images/burguro.png"},
         {"name": "Garama and Madundung", "rarity": "common", "value": 25, "is_daily_pool": True, "daily_weight": 0.1, "image_url": "/images/garama.png"},
-        {"name": "John Doe", "rarity": "common", "value": 25, "image_url": ""},
+        {"name": "John Doe", "rarity": "common", "value": 25, "image_url": "/images/john_doe.png"},
         {"name": "Mariachi Corazoni", "rarity": "common", "value": 9, "image_url": ""},
     ]
 
