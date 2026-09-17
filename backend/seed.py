@@ -51,7 +51,7 @@ else:
         {"name": "Guest 666", "rarity": "epic", "value": 299, "image_url": "/images/guest_six_six_six.png"},
         {"name": "Rubiko and Kubiko", "rarity": "epic", "value": 379, "image_url": "/images/rubiko_and_kubiko.png"},
         {"name": "Fortunu and Cashuru", "rarity": "epic", "value": 399, "image_url": "/images/fortunu_and_cashuru.png"},
-        {"name": "La Supreme Combinasion", "rarity": "legendary", "value": 2999, "image_url": ""},
+        {"name": "La Supreme Combinasion", "rarity": "legendary", "value": 2999, "image_url": "/images/la_supreme_combinasion.png"},
         {"name": "Griffin", "rarity": "legendary", "value": 4499, "image_url": "/images/griffin.png"},
         {"name": "Dragon Gingerini", "rarity": "legendary", "value": 5999, "image_url": "/images/dragon_gingerini.png"},
         {"name": "Antonio", "rarity": "legendary", "value": 8499, "image_url": ""},
