@@ -46,7 +46,7 @@ else:
         {"name": "Money Money Bros", "rarity": "rare", "value": 105, "image_url": ""},
         {"name": "Spooky and Pumpky", "rarity": "rare", "value": 90, "image_url": "/images/spooky_and_pumpky.png"},
         {"name": "Cash or Card", "rarity": "common", "value": 30, "image_url": "/images/cash_or_card.png"},
-        {"name": "Los Tacoritas", "rarity": "epic", "value": 249, "image_url": "/los_tacoritas.png"},
+        {"name": "Los Tacoritas", "rarity": "epic", "value": 249, "image_url": "/images/los_tacoritas.png"},
         {"name": "La Fuse Machine", "rarity": "epic", "value": 219, "image_url": "/images/la_fuse_machine.png"},
         {"name": "Guest 666", "rarity": "epic", "value": 299, "image_url": "/images/guest_six_six_six.png"},
         {"name": "Rubiko and Kubiko", "rarity": "epic", "value": 379, "image_url": "/images/rubiko_and_kubiko.png"},
