@@ -23,9 +23,9 @@ else:
     items_data = [
         {"name": "La Grande", "rarity": "common", "value": 9, "image_url": "/images/la_grande.png"},
         {"name": "67", "rarity": "common", "value": 12, "image_url": "/images/sixty_seven.png"},
-        {"name": "1 Cash", "rarity": "common", "value": 1, "is_daily_pool": True, "is_cash": True, "daily_weight": 50, "image_url": "/images/cash1.png"},
-        {"name": "3 Cash", "rarity": "common", "value": 3, "is_daily_pool": True, "is_cash": True, "daily_weight": 25, "image_url": "/images/cash3.png"},
-        {"name": "5 Cash", "rarity": "common", "value": 5, "is_daily_pool": True, "is_cash": True, "daily_weight": 10, "image_url": "/images/cash5.png"},
+        {"name": "1 Cash", "rarity": "common", "value": 1, "is_daily_pool": True, "is_cash": True, "daily_weight": 50, "image_url": "/images/moneta.png"},
+        {"name": "3 Cash", "rarity": "common", "value": 3, "is_daily_pool": True, "is_cash": True, "daily_weight": 25, "image_url": "/images/moneta.png"},
+        {"name": "5 Cash", "rarity": "common", "value": 5, "is_daily_pool": True, "is_cash": True, "daily_weight": 10, "image_url": "/images/moneta.png"},
         {"name": "Bacuru and Egguru", "rarity": "common", "value": 15, "image_url": "/images/bacuru_and_egguru.png"},
         {"name": "Los Mobilis", "rarity": "common", "value": 18, "image_url": "/images/los_mobilis.png"},
         {"name": "Ketupat Kepat", "rarity": "common", "value": 29, "image_url": "/images/ketupat_kepat.png"},
