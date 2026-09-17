@@ -80,7 +80,6 @@ else:
 
     cases_data = [
         {"name": "Lucky Case", "price": 49, "image_url": "/images/Lucky.png", "item_names": [
-            "Rico Dinero", "Rosey and Teddy", "Spooky and Pumpky", "Cerberus",
             "Sammyni Fattini", "Festive 67", "Tuff Toucan",
             "John Doe","Ketupat Kepat"]},
         {"name": "Crazy Case", "price": 79, "image_url": "/images/crazy.png", "item_names": [
