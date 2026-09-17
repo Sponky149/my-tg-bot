@@ -40,7 +40,13 @@ def open_daily_case(db: Session, user: User) -> dict:
     won_item = random.choices(items, weights=weights, k=1)[0]
     multiplier = roll_multiplier()
 
-    db.add(InventoryItem(user_id=user.id, item_id=won_item.id, value_multiplier=multiplier))
+    # Cash - это валюта: сразу на баланс, в инвентарь НЕ кладём.
+    # Обычный брейнрот - в инвентарь как предмет.
+    if won_item.is_cash:
+        user.balance += won_item.value * multiplier
+    else:
+        db.add(InventoryItem(user_id=user.id, item_id=won_item.id, value_multiplier=multiplier))
+
     user.last_daily_claim = datetime.utcnow()
     user.cases_opened = (user.cases_opened or 0) + 1
     db.add(DropLog(
