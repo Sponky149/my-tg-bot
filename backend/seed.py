@@ -28,7 +28,7 @@ else:
         {"name": "5 Cash", "rarity": "common", "value": 5, "is_daily_pool": True, "is_cash": True, "daily_weight": 10, "image_url": "/images/cash5.png"},
         {"name": "Bacuru and Egguru", "rarity": "common", "value": 15, "image_url": "/images/bacuru_and_egguru.png"},
         {"name": "Los Mobilis", "rarity": "common", "value": 18, "image_url": "/images/los_mobilis.png"},
-        {"name": "Ketupat Kepat", "rarity": "common", "value": 19, "image_url": "/images/ketupat_kepat.png"},
+        {"name": "Ketupat Kepat", "rarity": "common", "value": 29, "image_url": "/images/ketupat_kepat.png"},
         {"name": "Noodle Noodle Poodle", "rarity": "common", "value": 24, "image_url": "/images/noodle_noodle_poodle.png"},
         {"name": "Capitano Gullini", "rarity": "common", "value": 25, "image_url": "/images/capitano_gullini.png"},
         {"name": "Tic Tac Sahur", "rarity": "common", "value": 26, "image_url": "/images/tic_tac_sahur.png"},
@@ -39,10 +39,10 @@ else:
         {"name": "W or L", "rarity": "rare", "value": 65, "image_url": "/images/w_l.png"},
         {"name": "Gold Gold Gold", "rarity": "rare", "value": 55, "image_url": "/images/gold_gold.png"},
         {"name": "Jolly Jolly Sahur", "rarity": "rare", "value": 99, "image_url": "/images/jolly_jolly_sahur.png"},
-        {"name": "Festive 67", "rarity": "rare", "value": 65, "image_url": "/images/festive_six_seven.png"},
+        {"name": "Festive 67", "rarity": "rare", "value": 89, "image_url": "/images/festive_six_seven.png"},
         {"name": "Boppin Bunny", "rarity": "rare", "value": 119, "image_url": "/images/boppin_bunny.png"},
         {"name": "Cerberus", "rarity": "rare", "value": 75, "image_url": "/images/cerberus.png"},
-        {"name": "Sammyni Fattini", "rarity": "rare", "value": 70, "image_url": "/images/sammyni_fatiny.png"},
+        {"name": "Sammyni Fattini", "rarity": "rare", "value": 99, "image_url": "/images/sammyni_fatiny.png"},
         {"name": "Money Money Bros", "rarity": "rare", "value": 105, "image_url": ""},
         {"name": "Spooky and Pumpky", "rarity": "rare", "value": 90, "image_url": "/images/spooky_and_pumpky.png"},
         {"name": "Cash or Card", "rarity": "common", "value": 30, "image_url": ""},
@@ -63,7 +63,7 @@ else:
         {"name": "Fragola La La La", "rarity": "rare", "value": 42, "image_url": "/images/fragola_la_la_la.png"},
         {"name": "La Taco Combinasion", "rarity": "common", "value": 30, "image_url": ""},
         {"name": "Burguro And Fryuro", "rarity": "common", "value": 27, "image_url": "/images/burguro.png"},
-        {"name": "Garama and Madundung", "rarity": "common", "value": 25, "is_daily_pool": True, "daily_weight": 0.1, "image_url": "/images/garama.png"},
+        {"name": "Garama and Madundung", "rarity": "common", "value": 49, "is_daily_pool": True, "daily_weight": 0.1, "image_url": "/images/garama.png"},
         {"name": "John Doe", "rarity": "common", "value": 25, "image_url": "/images/john_doe.png"},
         {"name": "Mariachi Corazoni", "rarity": "common", "value": 9, "image_url": ""},
     ]
@@ -81,24 +81,15 @@ else:
     cases_data = [
         {"name": "Lucky Case", "price": 49, "image_url": "/images/Lucky.png", "item_names": [
             "Rico Dinero", "Rosey and Teddy", "Spooky and Pumpky", "Cerberus",
-            "Sammyni Fattini", "Festive 67", "Capitano Moby", "Tuff Toucan",
-            "Fragola La La La", "La Taco Combinasion", "Burguro And Fryuro",
-            "Garama and Madundung", "John Doe"]},
+            "Sammyni Fattini", "Festive 67", "Tuff Toucan",
+            "John Doe","Ketupat Kepat"]},
         {"name": "Crazy Case", "price": 79, "image_url": "/images/crazy.png", "item_names": [
             "Los Mariachis", "Ketchuru and Musturu", "Noodle Noodle Poodle",
             "Gold Gold Gold", "Festive 67", "W or L",
             "Los Tacoritas", "Griffin"]},
-        {"name": "Mystery Case", "price": 99, "image_url": "/images/mystery.png", "item_names": [
-            "Los Mobilis", "Bacuru and Egguru", "Jolly Jolly Sahur",
-            "Boppin Bunny", "Cerberus", "La Fuse Machine",
-            "Fortunu and Cashuru", "Dragon Gingerini"]},
         {"name": "Rich Case", "price": 149, "image_url": "/images/rich.png", "item_names": [
             "Steakini Fattini", "Gold Gold Gold", "Sammyni Fattini",
             "Los Tacoritas", "Rubiko and Kubiko", "Guest 666",
-            "Griffin", "Dragon Gingerini"]},
-        {"name": "Legend Case", "price": 249, "image_url": "/images/legend.png", "item_names": [
-            "Festive 67", "Cerberus", "La Fuse Machine",
-            "Fortunu and Cashuru", "Guest 666", "Los Tacoritas",
             "Griffin", "Dragon Gingerini"]},
         {"name": "Guest Case", "price": 666, "image_url": "/images/guest.png", "item_names": [
             "Los Tacoritas", "La Fuse Machine", "Rubiko and Kubiko",
