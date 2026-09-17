@@ -1008,7 +1008,6 @@
       $('qtyRow').style.display = 'none';
       $('detailTitle').textContent = 'Free Case';
       $('detailPrice').innerHTML = 'БЕСПЛАТНО';
-      $('detailCount').textContent = state.allItems.length;
       $('detailChestEmoji').innerHTML = `<img src="/images/free.png" alt="" />`;
 
       const btn = $('detailOpenBtn');
@@ -1020,15 +1019,23 @@
         btn.disabled = true;
       }
 
-      $('detailItemsGrid').innerHTML = state.allItems.map((it) => `
-        <div class="detail-item-card rarity-${it.rarity}">
-          <div class="detail-item-emoji">${mediaFor(it, 'media-odds')}</div>
-          <div class="detail-item-name">${it.name}</div>
-          <div class="detail-item-price">🪙 ${it.value}</div>
-        </div>
-      `).join('');
-
+      $('detailItemsGrid').innerHTML = `<div class="pick-empty">Загрузка...</div>`;
       $('caseDetailOverlay').classList.add('show');
+
+      // берём ТОЛЬКО пул бесплатного кейса, а не все предметы игры
+      try {
+        const data = await api('/api/daily/items');
+        $('detailCount').textContent = data.items.length;
+        $('detailItemsGrid').innerHTML = data.items.map((it) => `
+          <div class="detail-item-card rarity-${it.rarity}">
+            <div class="detail-item-emoji">${mediaFor(it, 'media-odds')}</div>
+            <div class="detail-item-name">${it.name}</div>
+            <div class="detail-item-price">🪙 ${it.value}</div>
+          </div>
+        `).join('');
+      } catch (e) {
+        $('detailItemsGrid').innerHTML = `<div class="pick-empty">Не удалось загрузить</div>`;
+      }
       return;
     }
 
