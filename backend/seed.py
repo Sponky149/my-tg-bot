@@ -59,7 +59,7 @@ else:
         {"name": "Rico Dinero", "rarity": "epic", "value": 250, "image_url": ""},
         {"name": "Rosey and Teddy", "rarity": "epic", "value": 220, "image_url": ""},
         {"name": "Capitano Moby", "rarity": "rare", "value": 45, "image_url": ""},
-        {"name": "Tuff Toucan", "rarity": "rare", "value": 45, "image_url": ""},
+        {"name": "Tuff Toucan", "rarity": "rare", "value": 59, "image_url": ""},
         {"name": "Fragola La La La", "rarity": "rare", "value": 42, "image_url": "/images/fragola_la_la_la.png"},
         {"name": "La Taco Combinasion", "rarity": "common", "value": 30, "image_url": ""},
         {"name": "Burguro And Fryuro", "rarity": "common", "value": 27, "image_url": "/images/burguro.png"},
