@@ -209,7 +209,7 @@ def daily_open(user: User = Depends(get_current_user), db: Session = Depends(get
             "item": {
                 "name": item.name, "rarity": item.rarity,
                 "value": item.value * multiplier, "base_value": item.value,
-                "multiplier": multiplier, "image_url": item.image_url,
+                "multiplier": multiplier, "image_url": item.image_url, "is_cash": item.is_cash,
             },
         }
     except ValueError as e:
@@ -266,7 +266,7 @@ def open_case_endpoint(
                 {
                     "name": r["item"].name, "rarity": r["item"].rarity,
                     "value": r["item"].value * r["multiplier"], "base_value": r["item"].value,
-                    "multiplier": r["multiplier"], "image_url": r["item"].image_url,
+                    "multiplier": r["multiplier"], "image_url": r["item"].image_url, "is_cash": r["item"].is_cash,
                 }
                 for r in results
             ],
