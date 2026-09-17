@@ -36,7 +36,7 @@ else:
         {"name": "Los Mariachis", "rarity": "common", "value": 35, "image_url": "/images/los_mariachis.png"},
         {"name": "Coco and Mango", "rarity": "common", "value": 39, "image_url": "/images/coco_and_mango.png"},
         {"name": "Steakini Fattini", "rarity": "rare", "value": 49, "image_url": ""},
-        {"name": "W or L", "rarity": "rare", "value": 65, "image_url": ""},
+        {"name": "W or L", "rarity": "rare", "value": 65, "image_url": "/images/w_l.png"},
         {"name": "Gold Gold Gold", "rarity": "rare", "value": 55, "image_url": "/images/gold_gold.png"},
         {"name": "Jolly Jolly Sahur", "rarity": "rare", "value": 99, "image_url": ""},
         {"name": "Festive 67", "rarity": "rare", "value": 65, "image_url": ""},
