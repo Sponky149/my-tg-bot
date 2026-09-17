@@ -45,6 +45,7 @@ class Item(Base):
     image_url = Column(String, nullable=True)
     is_daily_pool = Column(Boolean, default=False)  # True = может выпасть из бесплатного ежедневного кейса
     daily_weight = Column(Float, nullable=True)  # точный вес именно в бесплатном кейсе (перебивает вес по редкости)
+    is_cash = Column(Boolean, default=False)  # True = это не брейнрот, а валюта: сразу идёт на баланс, не в инвентарь
 
 
 class InventoryItem(Base):
