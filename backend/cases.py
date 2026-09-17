@@ -33,7 +33,10 @@ def open_case(db: Session, user: User, case_id: int, quantity: int = 1) -> list[
         won_item = random.choices(items, weights=weights, k=1)[0]
         multiplier = roll_multiplier()
 
-        db.add(InventoryItem(user_id=user.id, item_id=won_item.id, value_multiplier=multiplier))
+        if won_item.is_cash:
+            user.balance += won_item.value * multiplier
+        else:
+            db.add(InventoryItem(user_id=user.id, item_id=won_item.id, value_multiplier=multiplier))
         db.add(DropLog(
             user_id=user.id, item_name=won_item.name, item_rarity=won_item.rarity,
             item_value=won_item.value * multiplier, source="case", case_name=case.name,
