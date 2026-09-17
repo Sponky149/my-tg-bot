@@ -192,6 +192,17 @@ def get_all_items(db: Session = Depends(get_db)):
     ]}
 
 
+@app.get("/api/daily/items")
+def daily_items(db: Session = Depends(get_db)):
+    """Список предметов, которые могут выпасть ТОЛЬКО из бесплатного кейса."""
+    items = db.query(Item).filter(Item.is_daily_pool == True).all()
+    return {"items": [
+        {"name": i.name, "rarity": i.rarity, "value": i.value,
+         "image_url": i.image_url, "is_cash": i.is_cash}
+        for i in items
+    ]}
+
+
 @app.get("/api/daily/status")
 def daily_status(user: User = Depends(get_current_user)):
     remaining = seconds_until_next_claim(user)
